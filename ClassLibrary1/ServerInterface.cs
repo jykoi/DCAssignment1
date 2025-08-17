@@ -12,7 +12,7 @@ namespace ClassLibrary1
     public interface ServerInterface
     {
         [OperationContract]
-        bool CheckUsername(string username);
+        bool AddUser(string username);
 
         [OperationContract]
         void createLobby(string lobbyName, string ownerName);

@@ -39,6 +39,7 @@ namespace ClientApp
         {
             if (serverChannel != null)
             {
+                //close the channel and the factory
                 ((ICommunicationObject)serverChannel).Close();
                 chanFactory.Close();
             }

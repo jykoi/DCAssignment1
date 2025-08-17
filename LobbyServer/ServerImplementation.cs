@@ -17,17 +17,6 @@ namespace LobbyServer
 
         }
 
-        public bool CheckUsername(string username)
-        {
-            bool result = AddUser(username);
-            foreach (var user in UserManager.usernames)
-            {
-                Console.WriteLine(user);
-            }
-            Console.WriteLine("Current User Count: " + UserManager.usernames.Count);
-            return result;
-        }
-
         public bool AddUser(string username)
         {
             if (string.IsNullOrWhiteSpace(username) || UserManager.usernames.Contains(username))
@@ -35,6 +24,11 @@ namespace LobbyServer
                 return false;
             }
             UserManager.usernames.Add(username);
+            foreach (var user in UserManager.usernames)
+            {
+                Console.WriteLine(user);
+            }
+            Console.WriteLine("Current User Count: " + UserManager.usernames.Count);
             return true;
         }
 

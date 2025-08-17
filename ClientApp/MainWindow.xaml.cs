@@ -34,21 +34,29 @@ namespace ClientApp
 
         private async void loginBtn_Click(object sender, RoutedEventArgs e)
         {
+
+            //start the connection process asynchronously using an instance of ClientServices
+
             DisableGui();
             clientServices = new ClientServices(usernameField.Text);
             Task connect = new Task(clientServices.Connect);
             connect.Start();
             await connect;
-            if (!clientServices.serverChannel.CheckUsername(clientServices.Username))
+
+            //check that the username is valid & unique
+            if (!clientServices.serverChannel.AddUser(clientServices.Username))
             {
+                //if not, end the connection
                 clientServices.Disconnect();
                 usernameField.Text = "pick valid and unique username";
                 EnableGui();
             }
             else
             {
+                //if valid, continue to the lobbies window
                 usernameField.Text = "Username accepted";
                 EnableGui();
+
 
                 Lobbies lobbiesWin = new Lobbies(clientServices);
                 lobbiesWin.Show();

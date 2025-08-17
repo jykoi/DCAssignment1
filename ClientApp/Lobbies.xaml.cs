@@ -20,7 +20,8 @@ namespace ClientApp
     public partial class Lobbies : Window
     {
         private ClientServices clientServices;
-        
+
+        //Must pass ClientServices instance to preserve the existing connection
         public Lobbies(ClientServices clientServices)
         {
             InitializeComponent();

@@ -15,7 +15,6 @@ namespace LobbyServer
             private set { _usernames = value; }
         }
 
-
         public static bool AddUser(string username)
         {
             if (string.IsNullOrWhiteSpace(username) || _usernames.Contains(username))
