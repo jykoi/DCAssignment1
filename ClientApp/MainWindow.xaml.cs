@@ -22,32 +22,55 @@ namespace ClientApp
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ServerInterface serverChannel;
-        private NetTcpBinding tcp;
-        private string URL = "net.tcp://localhost:8100/DataService";
-        private ChannelFactory<ServerInterface> chanFactory;
+
+        ClientServices clientServices;
         public MainWindow()
         {
             InitializeComponent();
+            progBar.Visibility = Visibility.Hidden;
             
+
         }
 
-        private void loginBtn_Click(object sender, RoutedEventArgs e)
+        private async void loginBtn_Click(object sender, RoutedEventArgs e)
         {
-            tcp = new NetTcpBinding();
-            chanFactory = new ChannelFactory<ServerInterface>(tcp, URL);
-            serverChannel = chanFactory.CreateChannel();
-            if (!serverChannel.CheckUsername(usernameField.Text))
+            DisableGui();
+            clientServices = new ClientServices(usernameField.Text);
+            Task connect = new Task(clientServices.Connect);
+            connect.Start();
+            await connect;
+            if (!clientServices.serverChannel.CheckUsername(clientServices.Username))
             {
-                ((ICommunicationObject)serverChannel).Close();
-                chanFactory.Close();
+                clientServices.Disconnect();
                 usernameField.Text = "pick valid and unique username";
+                EnableGui();
             }
             else
             {
                 usernameField.Text = "Username accepted";
-                loginBtn.IsEnabled = false;
+                EnableGui();
+
+                Lobbies lobbiesWin = new Lobbies(clientServices);
+                lobbiesWin.Show();
+                this.Close();
+
             }
+        }
+
+        private void DisableGui()
+        {
+            usernameField.IsEnabled = false;
+            loginBtn.IsEnabled = false;
+            progBar.Visibility = Visibility.Visible;
+            progBar.IsIndeterminate = true;
+        }
+
+        private void EnableGui()
+        {
+            usernameField.IsEnabled = true;
+            loginBtn.IsEnabled = true;
+            progBar.Visibility = Visibility.Hidden;
+            progBar.IsIndeterminate = false;
         }
     }
 }

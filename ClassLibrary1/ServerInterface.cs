@@ -13,5 +13,8 @@ namespace ClassLibrary1
     {
         [OperationContract]
         bool CheckUsername(string username);
+
+        [OperationContract]
+        void createLobby(string lobbyName, string ownerName);
     }
 }

@@ -37,5 +37,12 @@ namespace LobbyServer
             UserManager.usernames.Add(username);
             return true;
         }
+
+        public void createLobby(string lobbyName, string ownerName)
+        {
+            Lobby lobby = new Lobby(lobbyName);
+            lobby.AddPlayer(ownerName);
+            LobbyManager.AddLobby(lobby);
+        }
     }
 }
