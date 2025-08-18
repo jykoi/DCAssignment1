@@ -10,8 +10,9 @@ namespace LobbyServer
 {
     public static class LobbyManager
     {
-        private static readonly List<Lobby> lobbies = new List<Lobby>();
+        private static readonly List<Lobby> _lobbies = new List<Lobby>();
         private static readonly object LobbiesLock = new object();
+
 
         public static void AddLobby(Lobby lobby)
         {
@@ -22,13 +23,14 @@ namespace LobbyServer
 
             lock (LobbiesLock)
             {
-                bool exists = lobbies.Any(l => string.Equals((l.Name ?? string.Empty).Trim(), name, StringComparison.Ordinal));
+                bool exists = _lobbies.Any(l => string.Equals((l.Name ?? string.Empty).Trim(), name, StringComparison.Ordinal));
 
                 if (!exists)
                 {
-                    lobbies.Add(lobby);
+                    _lobbies.Add(lobby);
                 }
-                lobbies.Add(lobby);
+                // redundant line?
+                //_lobbies.Add(lobby);
             }
         }
 
@@ -37,10 +39,18 @@ namespace LobbyServer
         {
             lock (LobbiesLock)
             {
-                return lobbies
+                return _lobbies
                     .Select(l => (l.Name ?? string.Empty).Trim())
                     .Where(n => !string.IsNullOrWhiteSpace(n))
                     .ToArray();
+            }
+        }
+
+        public static List<Lobby> GetLobbiesSnapshot()
+        {
+            lock (LobbiesLock)
+            {
+                return new List<Lobby>(_lobbies);
             }
         }
 
@@ -52,7 +62,7 @@ namespace LobbyServer
 
             lock (LobbiesLock)
             {
-                return lobbies.Any(l =>
+                return _lobbies.Any(l =>
                     string.Equals((l.Name ?? string.Empty).Trim(), lobbyName, StringComparison.Ordinal));
             }
         }    

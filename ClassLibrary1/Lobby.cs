@@ -1,22 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace LobbyServer
 {
+    [DataContract]
     public class Lobby
     {
+        [DataMember]
         private readonly List<string> _players = new List<string>();
+        [DataMember]
         private readonly object _playersLock = new object();
+        [DataMember]
         private string _name;
 
+        [DataMember]
         public string Name
         {
             get => _name;
             set => _name = (value ?? string.Empty).Trim();
         }
+
 
         public Lobby(string name)
         {
@@ -25,6 +32,19 @@ namespace LobbyServer
             Name = name;
         }
 
+        private Lobby()
+        {
+
+        }
+
+        // used for instantiation during deserialization
+        [OnDeserializing]
+        private void OnDeserializing(StreamingContext context)
+        {
+            
+        }
+
+
         public bool AddPlayer(string username)
         {
             username = (username ?? string.Empty).Trim();
@@ -32,7 +52,7 @@ namespace LobbyServer
 
             lock (_playersLock)
             {
-                if (!_players.Contains(username)) return false;
+                if (_players.Contains(username)) return false;
                 _players.Add(username);
                 return true;
             }

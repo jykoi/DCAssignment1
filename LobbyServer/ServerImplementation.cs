@@ -42,11 +42,26 @@ namespace LobbyServer
 
         }
 
-        public void createLobby(string lobbyName, string ownerName)
+        public bool CreateLobby(string lobbyName, string ownerName, out Lobby lobby)
         {
-            Lobby lobby = new Lobby(lobbyName);
+            lobby = null;
+            if (string.IsNullOrWhiteSpace(lobbyName) || LobbyManager.LobbyExists(lobbyName))
+            {
+                return false;
+            }
+
+            lobby = new Lobby(lobbyName);
             lobby.AddPlayer(ownerName);
             LobbyManager.AddLobby(lobby);
+
+
+            foreach (var lobbyItem in LobbyManager.GetLobbiesSnapshot())
+            {
+                //for testing...
+                Console.WriteLine(lobbyItem.Name + ":" + lobbyItem.GetPlayersSnapshot()[0]);
+            }
+
+            return true;
         }
 
         public void Logout(string username)
