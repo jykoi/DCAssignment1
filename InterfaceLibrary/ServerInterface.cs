@@ -15,7 +15,7 @@ namespace ClassLibrary1
         bool AddUser(string username);
 
         [OperationContract]
-        bool CreateLobby(string lobbyName, string ownerName);
+        bool CreateLobby(string lobbyName, string ownerName, out Lobby lobby);
 
 
     }

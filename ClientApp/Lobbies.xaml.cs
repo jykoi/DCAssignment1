@@ -32,8 +32,9 @@ namespace ClientApp
         // create a new lobby
         private void newLobbyBtn_Click(object sender, RoutedEventArgs e)
         {
+            Lobby lobby;
             string newLobbyName = newLobbyNameField.Text;
-            if (clientServices.serverChannel.CreateLobby(newLobbyName, clientServices.Username))
+            if (clientServices.serverChannel.CreateLobby(newLobbyName, clientServices.Username, out lobby))
             {
                 newLobbyNameField.Text = "Created successfully";
             }

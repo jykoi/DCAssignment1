@@ -33,15 +33,15 @@ namespace LobbyServer
         }
 
         // checks if the lobby name is unique & valid and adds it to the list of lobbies
-        public bool CreateLobby(string lobbyName, string ownerName)
+        public bool CreateLobby(string lobbyName, string ownerName, out Lobby lobby)
         {
-            
+            lobby = null;
             if (string.IsNullOrWhiteSpace(lobbyName) || LobbyManager.ContainsLobbyName(lobbyName))
             {
                 return false;
             }
 
-            Lobby lobby = new Lobby(lobbyName);
+            lobby = new Lobby(lobbyName);
             lobby.AddPlayer(ownerName);
             LobbyManager.AddLobby(lobby);
 

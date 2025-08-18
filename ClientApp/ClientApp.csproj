@@ -108,6 +108,10 @@
       <Project>{c7d8d9fc-70ad-4efe-ab53-513feae2360b}</Project>
       <Name>ServerDLL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\InterfaceLibrary\InterfaceLibrary.csproj">
+      <Project>{66642a4e-ddf7-439f-bac7-f4e92d3c2132}</Project>
+      <Name>InterfaceLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
