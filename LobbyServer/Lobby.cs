@@ -8,32 +8,54 @@ namespace LobbyServer
 {
     public class Lobby
     {
-        private List<string> _players;
+        private readonly List<string> _players = new List<string>();
+        private readonly object _playersLock = new object();
         private string _name;
 
         public string Name
         {
-            get { return _name; }
-            set { _name = value; }
-        }
-
-        public List<string> Players
-        {
-            get { return _players; }
+            get => _name;
+            set => _name = (value ?? string.Empty).Trim();
         }
 
         public Lobby(string name)
         {
-            _players = new List<string>();
-            _name = name;
+            //_players = new List<string>();
+            //_name = name;
+            Name = name;
         }
 
-        public void AddPlayer(string username)
+        public bool AddPlayer(string username)
         {
-            if (!_players.Contains(username))
+            username = (username ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(username)) return false;
+
+            lock (_playersLock)
             {
+                if (!_players.Contains(username)) return false;
                 _players.Add(username);
+                return true;
+            }
+        }
+
+        public bool RemovePlayer(string username)
+        {
+            username = (username ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(username)) return false;
+
+            lock (_playersLock)
+            {
+                return _players.Remove(username);
+            }
+        }
+
+        public string[] GetPlayersSnapshot()
+        {
+            lock (_playersLock)
+            {
+                return _players.ToArray();
             }
         }
     }
+
 }

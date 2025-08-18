@@ -11,23 +11,21 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Xml.Serialization;
+using ClassLibrary1;
 
 namespace ClientApp
 {
     /// <summary>
-    /// Interaction logic for Lobbies.xaml
+    /// Interaction logic for LobbyWindow.xaml
     /// </summary>
-    public partial class Lobbies : Window
+    public partial class LobbyWindow : Window
     {
-        private readonly ClientServices _client;
-
-        //Must pass ClientServices instance to preserve the existing connection
-        public Lobbies(ClientServices clientServices)
+        private readonly ServerInterface _proxy;
+        public LobbyWindow(ServerInterface proxy)
         {
             InitializeComponent();
-            _client = clientServices;
-
-            //load when window is ready
+            _proxy = proxy;
             Loaded += (_, __) => LoadLobbies();
         }
 
@@ -35,9 +33,10 @@ namespace ClientApp
         {
             try
             {
-                var names = _client.serverChannel.ListLobbies() ?? Array.Empty<string>();
+                var names = _proxy.ListLobbies() ?? Array.Empty<string>();
                 LobbiesList.ItemsSource = names;
                 Status.Text = $"Loaded {names.Length} lobby(ies).";
+                
             }
             catch (Exception ex)
             {
@@ -49,5 +48,6 @@ namespace ClientApp
         {
             LoadLobbies();
         }
+
     }
 }

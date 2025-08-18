@@ -5,6 +5,7 @@ using System.Linq;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace LobbyServer
 {
@@ -17,19 +18,28 @@ namespace LobbyServer
 
         }
 
+        private static readonly object UsersLock = new object();
+
         public bool AddUser(string username)
         {
-            if (string.IsNullOrWhiteSpace(username) || UserManager.usernames.Contains(username))
+            //normalising the username once eg User and User are the SAME.
+            username = (username ?? string.Empty).Trim();
+
+            lock (UsersLock)
             {
-                return false;
+                if (string.IsNullOrWhiteSpace(username) || UserManager.usernames.Contains(username))
+                {
+                    return false;
+                }
+                UserManager.usernames.Add(username);
+                foreach (var user in UserManager.usernames)
+                {
+                    Console.WriteLine(user);
+                }
+                Console.WriteLine("Current User Count: " + UserManager.usernames.Count);
+                return true;
             }
-            UserManager.usernames.Add(username);
-            foreach (var user in UserManager.usernames)
-            {
-                Console.WriteLine(user);
-            }
-            Console.WriteLine("Current User Count: " + UserManager.usernames.Count);
-            return true;
+
         }
 
         public void createLobby(string lobbyName, string ownerName)
@@ -38,5 +48,32 @@ namespace LobbyServer
             lobby.AddPlayer(ownerName);
             LobbyManager.AddLobby(lobby);
         }
+
+        public void Logout(string username)
+        {
+            username = (username ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(username)) return;
+
+            lock (UsersLock)
+            {
+                if (UserManager.usernames.Remove(username))
+                {
+                    Console.WriteLine($"User '{username}' logged out.");
+                }
+                else
+                {
+                    Console.WriteLine($"Logout requested for '{username}' but no such user exists.");
+                }
+                Console.WriteLine("Current User Count: " + UserManager.usernames.Count);
+
+            }
+
+        }
+
+        public string[] ListLobbies()
+        {
+            return LobbyManager.GetLobbyNamesSnapshot();
+        }
+
     }
 }

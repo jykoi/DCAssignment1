@@ -16,5 +16,11 @@ namespace ClassLibrary1
 
         [OperationContract]
         void createLobby(string lobbyName, string ownerName);
+
+        [OperationContract]
+        void Logout(string username);
+
+        [OperationContract]
+        string[] ListLobbies();
     }
 }
