@@ -44,12 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Lobby.cs" />
-    <Compile Include="LobbyManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerImplementation.cs" />
-    <Compile Include="UserManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -58,6 +55,10 @@
     <ProjectReference Include="..\ClassLibrary1\ServerDLL.csproj">
       <Project>{c7d8d9fc-70ad-4efe-ab53-513feae2360b}</Project>
       <Name>ServerDLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\InterfaceLibrary\InterfaceLibrary.csproj">
+      <Project>{66642a4e-ddf7-439f-bac7-f4e92d3c2132}</Project>
+      <Name>InterfaceLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

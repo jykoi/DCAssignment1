@@ -32,11 +32,25 @@ namespace LobbyServer
             return true;
         }
 
-        public void createLobby(string lobbyName, string ownerName)
+        // checks if the lobby name is unique & valid and adds it to the list of lobbies
+        public bool CreateLobby(string lobbyName, string ownerName)
         {
+            
+            if (string.IsNullOrWhiteSpace(lobbyName) || LobbyManager.ContainsLobbyName(lobbyName))
+            {
+                return false;
+            }
+
             Lobby lobby = new Lobby(lobbyName);
             lobby.AddPlayer(ownerName);
             LobbyManager.AddLobby(lobby);
+
+            foreach (var lobbyItem in LobbyManager.lobbies)
+            {
+                Console.WriteLine(lobbyItem.Name + ":" + lobbyItem.Players[0]);
+            }
+
+            return true;
         }
     }
 }

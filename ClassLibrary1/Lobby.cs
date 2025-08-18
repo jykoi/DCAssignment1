@@ -8,6 +8,7 @@ namespace LobbyServer
 {
     public class Lobby
     {
+        
         private List<string> _players;
         private string _name;
 

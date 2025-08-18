@@ -7,6 +7,8 @@
         mc:Ignorable="d"
         Title="Lobbies" Height="450" Width="800">
     <Grid>
-        
+        <TextBox Name="newLobbyNameField" HorizontalAlignment="Left" Margin="254,262,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="146" Height="35"/>
+        <Button Content="Create Lobby" Name="newLobbyBtn" HorizontalAlignment="Left" Margin="446,262,0,0" VerticalAlignment="Top" Height="35" Width="77" Click="newLobbyBtn_Click"/>
+
     </Grid>
 </Window>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LobbyServer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,6 +27,20 @@ namespace ClientApp
         {
             InitializeComponent();
             this.clientServices = clientServices;
+        }
+
+        // create a new lobby
+        private void newLobbyBtn_Click(object sender, RoutedEventArgs e)
+        {
+            string newLobbyName = newLobbyNameField.Text;
+            if (clientServices.serverChannel.CreateLobby(newLobbyName, clientServices.Username))
+            {
+                newLobbyNameField.Text = "Created successfully";
+            }
+            else
+            {
+                newLobbyNameField.Text = "could not create lobby";
+            }
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ServiceModel;
-
+using LobbyServer;
 
 namespace ClassLibrary1
 {
@@ -15,6 +15,8 @@ namespace ClassLibrary1
         bool AddUser(string username);
 
         [OperationContract]
-        void createLobby(string lobbyName, string ownerName);
+        bool CreateLobby(string lobbyName, string ownerName);
+
+
     }
 }
