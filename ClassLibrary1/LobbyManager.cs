@@ -13,6 +13,13 @@ namespace LobbyServer
         private static readonly List<Lobby> _lobbies = new List<Lobby>();
         private static readonly object LobbiesLock = new object();
 
+        public static List<Lobby> Lobbies
+        {
+            get
+            {
+                return new List<Lobby>(_lobbies);
+            }
+        }
 
         public static void AddLobby(Lobby lobby)
         {
@@ -37,21 +44,19 @@ namespace LobbyServer
         //readonly snapshot of lobbyNames for client display 
         public static string[] GetLobbyNamesSnapshot()
         {
-            lock (LobbiesLock)
-            {
-                return _lobbies
-                    .Select(l => (l.Name ?? string.Empty).Trim())
-                    .Where(n => !string.IsNullOrWhiteSpace(n))
-                    .ToArray();
-            }
+            
+            return _lobbies
+                .Select(l => (l.Name ?? string.Empty).Trim())
+                .Where(n => !string.IsNullOrWhiteSpace(n))
+                .ToArray();
+            
         }
 
         public static List<Lobby> GetLobbiesSnapshot()
         {
-            lock (LobbiesLock)
-            {
-                return new List<Lobby>(_lobbies);
-            }
+            
+            return new List<Lobby>(_lobbies);
+            
         }
 
         //TO BE FINISHED? Helper for future steps ie. join/create validation

@@ -24,6 +24,16 @@ namespace LobbyServer
             set => _name = (value ?? string.Empty).Trim();
         }
 
+        //this property makes the program crash even though it's now used anywhere
+
+        //[DataMember]
+        //public List<string> Players
+        //{
+        //    get
+        //    {
+        //        return new List<string>(_players);   
+        //    }
+        //}
 
         public Lobby(string name)
         {
@@ -71,10 +81,9 @@ namespace LobbyServer
 
         public string[] GetPlayersSnapshot()
         {
-            lock (_playersLock)
-            {
-                return _players.ToArray();
-            }
+            
+            return _players.ToArray();
+            
         }
     }
 

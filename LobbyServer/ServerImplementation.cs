@@ -55,7 +55,7 @@ namespace LobbyServer
             LobbyManager.AddLobby(lobby);
 
 
-            foreach (var lobbyItem in LobbyManager.GetLobbiesSnapshot())
+            foreach (var lobbyItem in LobbyManager.Lobbies)
             {
                 //for testing...
                 Console.WriteLine(lobbyItem.Name + ":" + lobbyItem.GetPlayersSnapshot()[0]);
