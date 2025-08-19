@@ -36,9 +36,11 @@ namespace ClientApp
         {
             try
             {
-                var names = _client.serverChannel.ListLobbies() ?? Array.Empty<string>();
-                LobbiesList.ItemsSource = names;
-                Status.Text = $"Loaded {names.Length} lobby(ies).";
+                List<Lobby> lobbies = _client.serverChannel.ListLobbies();
+                            
+                LobbiesList.ItemsSource = lobbies.Select(l => l.Name).ToList();
+                
+                Status.Text = $"Loaded {lobbies.Count} lobby(ies).";
             }
             catch (Exception ex)
             {

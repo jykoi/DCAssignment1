@@ -52,10 +52,20 @@ namespace LobbyServer
             
         }
 
-        public static List<Lobby> GetLobbiesSnapshot()
-        {
+        //public static List<Lobby> GetLobbiesSnapshot()
+        //{
             
-            return new List<Lobby>(_lobbies);
+        //    return new List<Lobby>(_lobbies);
+            
+        //}
+
+        public static string[] GetLobbyNames()
+        {
+                       
+            return _lobbies
+                .Select(l => (l.Name ?? string.Empty).Trim())
+                .Where(n => !string.IsNullOrWhiteSpace(n))
+                .ToArray();
             
         }
 

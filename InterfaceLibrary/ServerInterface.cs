@@ -22,6 +22,9 @@ namespace ClassLibrary1
         void Logout(string username);
 
         [OperationContract]
-        string[] ListLobbies();
+        List<Lobby> ListLobbies();
+
+        [OperationContract]
+        string[] GetLobbyNames();
     }
 }

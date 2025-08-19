@@ -33,7 +33,7 @@ namespace ClientApp
         {
             try
             {
-                var names = _proxy.ListLobbies() ?? Array.Empty<string>();
+                var names = _proxy.GetLobbyNames() ?? Array.Empty<string>();
                 LobbiesList.ItemsSource = names;
                 Status.Text = $"Loaded {names.Length} lobby(ies).";
                 

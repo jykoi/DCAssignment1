@@ -85,9 +85,14 @@ namespace LobbyServer
 
         }
 
-        public string[] ListLobbies()
+        public List<Lobby> ListLobbies()
         {
-            return LobbyManager.GetLobbyNamesSnapshot();
+            return LobbyManager.Lobbies;
+        }
+
+        public string[] GetLobbyNames()
+        {
+            return LobbyManager.GetLobbyNames();
         }
 
     }
