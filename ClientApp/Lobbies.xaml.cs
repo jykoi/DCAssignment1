@@ -1,6 +1,7 @@
 ﻿using LobbyServer;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,7 @@ namespace ClientApp
     public partial class Lobbies : Window
     {
         private readonly ClientServices _client;
+        private Task<List<Lobby>> _lobbyFetching;
 
         //Must pass ClientServices instance to preserve the existing connection
         public Lobbies(ClientServices clientServices)
@@ -32,25 +34,34 @@ namespace ClientApp
             Loaded += (_, __) => LoadLobbies();
         }
 
-        private void LoadLobbies()
+        private async void LoadLobbies()
         {
-            try
+
+            while (true)
             {
-                List<Lobby> lobbies = _client.serverChannel.ListLobbies();
-                            
-                LobbiesList.ItemsSource = lobbies.Select(l => l.Name).ToList();
-                
-                Status.Text = $"Loaded {lobbies.Count} lobby(ies).";
-            }
-            catch (Exception ex)
-            {
-                Status.Text = "Failed in loading lobbies: " + ex.Message;
+                try
+                {
+                    _lobbyFetching = new Task<List<Lobby>>(() => PollLobbies());
+                    _lobbyFetching.Start();
+                    List<Lobby> lobbies = await _lobbyFetching;
+                    LobbiesList.ItemsSource = lobbies.Select(l => l.Name).ToList();
+
+                    Status.Text = $"Loaded {lobbies.Count} lobby(ies).";
+                    
+
+                }
+                catch (Exception ex)
+                {
+                    Status.Text = "Failed in loading lobbies: " + ex.Message;
+                }
+                await Task.Delay(5000);
             }
         }
 
-        private void RefreshBtn_Click(object sender, RoutedEventArgs e)
+        private List<Lobby> PollLobbies()
         {
-            LoadLobbies();
+            List<Lobby> lobbies = _client.serverChannel.ListLobbies();
+            return lobbies;
         }
 
         private void newLobbyBtn_Click(object sender, RoutedEventArgs e)
