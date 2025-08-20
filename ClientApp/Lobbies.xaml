@@ -1,13 +1,13 @@
 ﻿<Window x:Class="ClientApp.Lobbies"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Lobbies" Height="360" Width="380">
+        Title="Lobbies" Height="500" Width="500">
     <DockPanel Margin="12">
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="0,0,0,8">
-            <Button x:Name="RefreshBtn" Content="Refresh" Width="80" Height="28"/>
             <TextBlock x:Name="Status" Margin="12,4,0,0" Foreground="Gray"/>
             <TextBox Name="newLobbyField" TextWrapping="Wrap" Width="120"/>
-            <Button Name="newLobbyBtn" Content="Button" Click="newLobbyBtn_Click"/>
+            <Button Name="newLobbyBtn" Content="Add lobby" Click="newLobbyBtn_Click" Width="80" Height="28"/>
+            <Button Content="Join" Width="54" Margin="50, 0, 0, 0"/>
         </StackPanel>
 
         <ListBox x:Name="LobbiesList"/>
