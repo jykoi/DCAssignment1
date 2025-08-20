@@ -4,7 +4,7 @@
         Title="Lobbies" Height="360" Width="380">
     <DockPanel Margin="12">
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="0,0,0,8">
-            <Button x:Name="RefreshBtn" Content="Refresh" Width="80" Height="28" Click="RefreshBtn_Click"/>
+            <Button x:Name="RefreshBtn" Content="Refresh" Width="80" Height="28"/>
             <TextBlock x:Name="Status" Margin="12,4,0,0" Foreground="Gray"/>
             <TextBox Name="newLobbyField" TextWrapping="Wrap" Width="120"/>
             <Button Name="newLobbyBtn" Content="Button" Click="newLobbyBtn_Click"/>
