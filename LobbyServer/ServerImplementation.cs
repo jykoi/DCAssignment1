@@ -51,8 +51,8 @@ namespace LobbyServer
             }
 
             lobby = new Lobby(lobbyName);
-            lobby.AddPlayer(ownerName);
             LobbyManager.AddLobby(lobby);
+            JoinLobby(lobbyName, ownerName);
 
 
             foreach (var lobbyItem in LobbyManager.Lobbies)
@@ -95,5 +95,28 @@ namespace LobbyServer
             return LobbyManager.GetLobbyNames();
         }
 
+        public void JoinLobby(string lobbyName, string username)
+        {
+            List<Lobby> lobbies = LobbyManager.Lobbies;
+            bool lobbyFound = false;
+            for (int i = 0; i < lobbies.Count && !lobbyFound; i++)
+            {
+                if (lobbies[i].Name.Equals(lobbyName, StringComparison.Ordinal))
+                {
+                    if (lobbies[i].AddPlayer(username))
+                    {
+                        Console.WriteLine($"User '{username}' joined lobby '{lobbyName}'.");
+                    }
+                    lobbyFound = true;
+                }
+            }
+        }
+
+        public Lobby GetLobbyByName(string lobbyName)
+        {
+            Lobby lobby = LobbyManager.Lobbies
+                .FirstOrDefault(l => l.Name.Equals(lobbyName, StringComparison.Ordinal));
+            return lobby;
+        }
     }
 }

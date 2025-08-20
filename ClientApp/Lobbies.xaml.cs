@@ -41,7 +41,7 @@ namespace ClientApp
             {
                 try
                 {
-                    _lobbyFetching = new Task<List<Lobby>>(() => PollLobbies());
+                    _lobbyFetching = new Task<List<Lobby>>(() => GetLobbies());
                     _lobbyFetching.Start();
                     List<Lobby> lobbies = await _lobbyFetching;
                     LobbiesList.ItemsSource = lobbies.Select(l => l.Name).ToList();
@@ -58,7 +58,7 @@ namespace ClientApp
             }
         }
 
-        private List<Lobby> PollLobbies()
+        private List<Lobby> GetLobbies()
         {
             List<Lobby> lobbies = _client.serverChannel.ListLobbies();
             return lobbies;
@@ -71,11 +71,34 @@ namespace ClientApp
             if (_client.serverChannel.CreateLobby(newLobbyName, _client.Username, out lobby))
             {
                 newLobbyField.Text = "Created successfully";
+                LoadNewLobby(lobby);
             }
             else
             {
                 newLobbyField.Text = "could not create lobby";
             }
+        }
+
+        private void LoadNewLobby(Lobby lobby)
+        {
+            LobbyRoom lobbyRoom = new LobbyRoom(_client, lobby);
+            lobbyRoom.Show();
+            this.Close();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            string selectedLobby = (LobbiesList.SelectedItem ?? String.Empty).ToString();
+
+            if (string.IsNullOrEmpty(selectedLobby))
+            {
+                MessageBox.Show("Please select a lobby to join.");
+                return;
+            }
+
+            _client.serverChannel.JoinLobby(selectedLobby, _client.Username);
+            LoadNewLobby(_client.serverChannel.GetLobbyByName(selectedLobby));
+
         }
     }
 }

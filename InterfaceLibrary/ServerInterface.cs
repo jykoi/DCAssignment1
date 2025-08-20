@@ -26,5 +26,11 @@ namespace ClassLibrary1
 
         [OperationContract]
         string[] GetLobbyNames();
+
+        [OperationContract]
+        void JoinLobby(string lobbyName, string username);
+
+        [OperationContract]
+        Lobby GetLobbyByName(string lobbyName);
     }
 }
