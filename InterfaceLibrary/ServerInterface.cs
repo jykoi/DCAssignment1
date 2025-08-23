@@ -32,5 +32,8 @@ namespace ClassLibrary1
 
         [OperationContract]
         Lobby GetLobbyByName(string lobbyName);
+
+        [OperationContract]
+        void LeaveLobby(string lobbyName, string username);
     }
 }

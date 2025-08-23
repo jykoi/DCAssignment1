@@ -36,8 +36,7 @@ namespace ClientApp
 
         private async void LoadLobbies()
         {
-
-            while (true)
+            while (true && _client.IsConnected())
             {
                 try
                 {
@@ -47,8 +46,6 @@ namespace ClientApp
                     LobbiesList.ItemsSource = lobbies.Select(l => l.Name).ToList();
 
                     Status.Text = $"Loaded {lobbies.Count} lobby(ies).";
-                    
-
                 }
                 catch (Exception ex)
                 {
@@ -71,7 +68,7 @@ namespace ClientApp
             if (_client.serverChannel.CreateLobby(newLobbyName, _client.Username, out lobby))
             {
                 newLobbyField.Text = "Created successfully";
-                LoadNewLobby(lobby);
+                LoadNewLobby(newLobbyName);
             }
             else
             {
@@ -79,14 +76,15 @@ namespace ClientApp
             }
         }
 
-        private void LoadNewLobby(Lobby lobby)
+        private void LoadNewLobby(string lobbyName)
         {
-            LobbyRoom lobbyRoom = new LobbyRoom(_client, lobby);
+            LobbyRoom lobbyRoom = new LobbyRoom(_client, lobbyName, this);
             lobbyRoom.Show();
-            this.Close();
+
+            this.Hide();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void JoinButton_Click(object sender, RoutedEventArgs e)
         {
             string selectedLobby = (LobbiesList.SelectedItem ?? String.Empty).ToString();
 
@@ -97,8 +95,28 @@ namespace ClientApp
             }
 
             _client.serverChannel.JoinLobby(selectedLobby, _client.Username);
-            LoadNewLobby(_client.serverChannel.GetLobbyByName(selectedLobby));
+            LoadNewLobby(selectedLobby);
 
         }
+
+        private void logoutBtn_Click(object sender, RoutedEventArgs e)
+        {
+            _client.Logout();
+            _client.Disconnect();
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.Show();
+            this.Close();
+        }
+
+        void Lobbies_Closing(object sender, CancelEventArgs e)
+        {
+            // Ensure the client disconnects when the window is closed
+            if (_client.IsConnected())
+            {
+                _client.Logout();
+                _client.Disconnect();
+            }
+        }
+
     }
 }

@@ -54,7 +54,6 @@ namespace LobbyServer
             
         }
 
-
         public bool AddPlayer(string username)
         {
             username = (username ?? string.Empty).Trim();
@@ -71,11 +70,12 @@ namespace LobbyServer
         public bool RemovePlayer(string username)
         {
             username = (username ?? string.Empty).Trim();
-            if (string.IsNullOrWhiteSpace(username)) return false;
+            if (string.IsNullOrWhiteSpace(username) || !_players.Contains(username)) return false;
 
             lock (_playersLock)
             {
-                return _players.Remove(username);
+                bool result = _players.Remove(username);
+                return result;
             }
         }
 

@@ -44,5 +44,27 @@ namespace ClientApp
                 chanFactory.Close();
             }
         }
+
+        public void Logout()
+        {
+            serverChannel.Logout(Username);
+        }
+
+        public bool IsConnected()
+        {
+            // Check if the channel is still open
+            if (serverChannel != null)
+            {
+                try
+                {
+                    return ((ICommunicationObject)serverChannel).State == CommunicationState.Opened;
+                }
+                catch (Exception)
+                {
+                    return false; // If an exception occurs, we assume the connection is not valid
+                }
+            }
+            return false; // If serverChannel is null, we are not connected
+        }
     }
 }
