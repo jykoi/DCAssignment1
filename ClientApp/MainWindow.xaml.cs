@@ -38,7 +38,7 @@ namespace ClientApp
             //start the connection process asynchronously using an instance of ClientServices
 
             DisableGui();
-            clientServices = new ClientServices(usernameField.Text);
+            clientServices = new ClientServices(usernameField.Text.Trim());
             Task connect = new Task(clientServices.Connect);
             connect.Start();
             await connect;
@@ -61,7 +61,6 @@ namespace ClientApp
                 Lobbies lobbiesWin = new Lobbies(clientServices);
                 lobbiesWin.Show();
                 this.Close();
-
             }
         }
 

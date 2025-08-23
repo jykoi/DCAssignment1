@@ -27,17 +27,13 @@ namespace LobbyServer
 
             lock (UsersLock)
             {
-                if (string.IsNullOrWhiteSpace(username) || UserManager.usernames.Contains(username))
-                {
-                    return false;
-                }
-                UserManager.usernames.Add(username);
-                foreach (var user in UserManager.usernames)
+                bool success = UserManager.AddUser(username);
+                foreach (var user in UserManager.Usernames)
                 {
                     Console.WriteLine(user);
                 }
-                Console.WriteLine("Current User Count: " + UserManager.usernames.Count);
-                return true;
+                Console.WriteLine("Current User Count: " + UserManager.Usernames.Count);
+                return success;
             }
 
         }
@@ -71,7 +67,7 @@ namespace LobbyServer
 
             lock (UsersLock)
             {
-                if (UserManager.usernames.Remove(username))
+                if (UserManager.Usernames.Remove(username))
                 {
                     Console.WriteLine($"User '{username}' logged out.");
                 }
@@ -79,7 +75,7 @@ namespace LobbyServer
                 {
                     Console.WriteLine($"Logout requested for '{username}' but no such user exists.");
                 }
-                Console.WriteLine("Current User Count: " + UserManager.usernames.Count);
+                Console.WriteLine("Current User Count: " + UserManager.Usernames.Count);
 
             }
 
@@ -106,6 +102,10 @@ namespace LobbyServer
                     if (lobbies[i].AddPlayer(username))
                     {
                         Console.WriteLine($"User '{username}' joined lobby '{lobbyName}'.");
+                        foreach (var player in lobbies[i].GetPlayersSnapshot())
+                        {
+                            Console.WriteLine($"Player in lobby '{lobbyName}': {player}");
+                        }
                     }
                     lobbyFound = true;
                 }
@@ -117,6 +117,20 @@ namespace LobbyServer
             Lobby lobby = LobbyManager.Lobbies
                 .FirstOrDefault(l => l.Name.Equals(lobbyName, StringComparison.Ordinal));
             return lobby;
+        }
+
+        public void LeaveLobby(string lobbyName, string username)
+        {
+            Lobby lobby = GetLobbyByName(lobbyName);
+            if (lobby == null || string.IsNullOrWhiteSpace(username)) return;
+            if (lobby.RemovePlayer(username))
+            {
+                Console.WriteLine($"User '{username}' left lobby '{lobby.Name}'.");
+            }
+            else
+            {
+                Console.WriteLine($"User '{username}' could not leave lobby '{lobby.Name}' - an error occured.");
+            }
         }
     }
 }

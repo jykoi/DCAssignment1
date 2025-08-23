@@ -20,13 +20,21 @@ namespace ClientApp
     /// </summary>
     public partial class LobbyRoom : Window
     {
-        private Lobby _thisLobby;
+        private string _thisLobbyName;
         private ClientServices _client;
-        public LobbyRoom(ClientServices client, Lobby lobby)
+        private Lobbies _lobbiesWindowInstance;
+        public LobbyRoom(ClientServices client, string lobbyName, Lobbies lobbiesWindow)
         {
             InitializeComponent();
             _client = client;
-            _thisLobby = lobby;
+            _thisLobbyName = lobbyName;
+            _lobbiesWindowInstance = lobbiesWindow;
+        }
+
+        void LobbyRoom_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            _lobbiesWindowInstance.Show();
+            _client.serverChannel.LeaveLobby(_thisLobbyName, _client.Username);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace LobbyServer
     public static class UserManager
     {
         private static List<string> _usernames = new List<string>();
-        public static List<string> usernames
+        public static List<string> Usernames
         {
             get { return _usernames; }
             private set { _usernames = value; }
