@@ -15,10 +15,11 @@ namespace ClientApp
     {
         public ServerInterface serverChannel;
         private NetTcpBinding tcp;
-        private string URL = "net.tcp://localhost:8100/DataService";
+        private string URL = "net.tcp://localhost:8200/DataService";
         private DuplexChannelFactory<ServerInterface> chanFactory;
 
         private List<string> _lobbies = new List<string>();
+        //Fired when a new lobby is created
         public Action OnLobbyCreated;
 
         public List<string> Lobbies
@@ -84,8 +85,8 @@ namespace ClientApp
         {
             var lobbies = serverChannel.GetLobbyNames().ToList();
             _lobbies = lobbies;
+            // Notify that lobbies have been updated
             OnLobbyCreated?.Invoke();
-            Trace.WriteLine("Fetched lobbies");
         }
     }
 }

@@ -22,7 +22,7 @@ namespace ClientApp
     public partial class Lobbies : Window
     {
         private readonly ClientServices _client;
-        private Task<List<Lobby>> _lobbyFetching;
+        private Task<List<string>> _lobbyFetching;
 
         //Must pass ClientServices instance to preserve the existing connection
         public Lobbies(ClientServices clientServices)
@@ -40,10 +40,10 @@ namespace ClientApp
             {
                 try
                 {
-                    _lobbyFetching = new Task<List<Lobby>>(() => GetLobbies());
+                    _lobbyFetching = new Task<List<string>>(() => GetLobbies());
                     _lobbyFetching.Start();
-                    List<Lobby> lobbies = await _lobbyFetching;
-                    LobbiesList.ItemsSource = lobbies.Select(l => l.Name).ToList();
+                    List<string> lobbies = await _lobbyFetching;
+                    LobbiesList.ItemsSource = lobbies;
 
                     Status.Text = $"Loaded {lobbies.Count} lobby(ies).";
                 }
@@ -55,9 +55,9 @@ namespace ClientApp
             }
         }
 
-        private List<Lobby> GetLobbies()
+        private List<string> GetLobbies()
         {
-            List<Lobby> lobbies = _client.serverChannel.ListLobbies();
+            List<string> lobbies = _client.serverChannel.GetLobbyNames().ToList();
             return lobbies;
         }
 

@@ -46,19 +46,18 @@ namespace ClientApp
 
         private void LobbiesWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            // windows is loaded but this code is not working
+            //bind the event in the client to a method that reloads the lobbies list
             _client.OnLobbyCreated = () =>
             {
                 Dispatcher.Invoke(() => LoadLobbies());
             };
-            LoadLobbies();
-            
+            //fetch the lobby and load the lobbies
+            _client.FetchLobbies();
         }
 
 
         private void newLobbyBtn_Click(object sender, RoutedEventArgs e)
         {
-            Lobby lobby;
             string newLobbyName = newLobbyField.Text;
             if (_client.serverChannel.CreateLobby(newLobbyName, _client.Username, out lobby))
             {

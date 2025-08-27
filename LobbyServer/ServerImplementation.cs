@@ -12,9 +12,10 @@ namespace LobbyServer
     [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false, InstanceContextMode = InstanceContextMode.PerSession)]
     internal class ServerImplementation : ServerInterface
     {
-
+        // maintain a dicitonary of connected duplex clients
         private static Dictionary<string, IServerCallback> _clients = new Dictionary<string, IServerCallback>();
         private static readonly object _lock = new object();
+        private bool isDuplexClient = false;
 
         public ServerImplementation()
         {
@@ -143,30 +144,44 @@ namespace LobbyServer
             }
         }
 
+        // register the client callback channel
         public void Subscribe()
         {
-            string clientId = OperationContext.Current.SessionId;
-            IServerCallback callback = OperationContext.Current.GetCallbackChannel<IServerCallback>();
-            lock (_lock)
+            try
             {
-                if (!_clients.ContainsKey(clientId))
+                string clientId = OperationContext.Current.SessionId;
+                IServerCallback callback = OperationContext.Current.GetCallbackChannel<IServerCallback>();
+                lock (_lock)
                 {
-                    _clients.Add(clientId, callback);
-                    
+                    if (!_clients.ContainsKey(clientId))
+                    {
+                        _clients.Add(clientId, callback);
+                        isDuplexClient = true;
+                    }
                 }
+            } 
+            catch
+            {
+
             }
+            
         }
 
+        // delete the client callback channel
         public void Unsubscribe()
         {
-            string clientId = OperationContext.Current.SessionId;
-            lock (_lock)
+            if (isDuplexClient)
             {
-                if (_clients.ContainsKey(clientId))
+                string clientId = OperationContext.Current.SessionId;
+                lock (_lock)
                 {
-                    _clients.Remove(clientId);
+                    if (_clients.ContainsKey(clientId))
+                    {
+                        _clients.Remove(clientId);
+                    }
                 }
             }
+            
         }
     }
 }

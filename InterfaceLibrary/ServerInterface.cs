@@ -15,7 +15,8 @@ namespace ClassLibrary1
         void FetchLobbies();
     }
 
-    [ServiceContract (CallbackContract =typeof(IServerCallback))]
+    //[ServiceContract (CallbackContract =typeof(IServerCallback))]
+    [ServiceContract]
     public interface ServerInterface
     {
         [OperationContract]
@@ -27,8 +28,8 @@ namespace ClassLibrary1
         [OperationContract]
         void Logout(string username);
 
-        [OperationContract]
-        List<Lobby> ListLobbies();
+        //[OperationContract]
+        //List<Lobby> ListLobbies();
 
         [OperationContract]
         string[] GetLobbyNames();
@@ -36,8 +37,8 @@ namespace ClassLibrary1
         [OperationContract]
         void JoinLobby(string lobbyName, string username);
 
-        [OperationContract]
-        Lobby GetLobbyByName(string lobbyName);
+        //[OperationContract]
+        //Lobby GetLobbyByName(string lobbyName);
 
         [OperationContract]
         void LeaveLobby(string lobbyName, string username);
