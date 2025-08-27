@@ -13,6 +13,9 @@ namespace LobbyServer
     internal class ServerImplementation : ServerInterface
     {
 
+        private static Dictionary<string, IServerCallback> _clients = new Dictionary<string, IServerCallback>();
+        private static readonly object _lock = new object();
+
         public ServerImplementation()
         {
 
@@ -45,16 +48,23 @@ namespace LobbyServer
             {
                 return false;
             }
+            
 
             lobby = new Lobby(lobbyName);
             LobbyManager.AddLobby(lobby);
             JoinLobby(lobbyName, ownerName);
+            
+            foreach (var client in _clients)
+            {
+                client.Value.FetchLobbies();
+            }
 
 
             foreach (var lobbyItem in LobbyManager.Lobbies)
             {
                 //for testing...
-                Console.WriteLine(lobbyItem.Name + ":" + lobbyItem.GetPlayersSnapshot()[0]);
+                if (lobbyItem.GetPlayersSnapshot().Length > 0)
+                    Console.WriteLine(lobbyItem.Name + ":" + lobbyItem.GetPlayersSnapshot()[0]);
             }
 
             return true;
@@ -130,6 +140,32 @@ namespace LobbyServer
             else
             {
                 Console.WriteLine($"User '{username}' could not leave lobby '{lobby.Name}' - an error occured.");
+            }
+        }
+
+        public void Subscribe()
+        {
+            string clientId = OperationContext.Current.SessionId;
+            IServerCallback callback = OperationContext.Current.GetCallbackChannel<IServerCallback>();
+            lock (_lock)
+            {
+                if (!_clients.ContainsKey(clientId))
+                {
+                    _clients.Add(clientId, callback);
+                    
+                }
+            }
+        }
+
+        public void Unsubscribe()
+        {
+            string clientId = OperationContext.Current.SessionId;
+            lock (_lock)
+            {
+                if (_clients.ContainsKey(clientId))
+                {
+                    _clients.Remove(clientId);
+                }
             }
         }
     }

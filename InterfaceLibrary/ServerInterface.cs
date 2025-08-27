@@ -9,7 +9,13 @@ using LobbyServer;
 
 namespace ClassLibrary1
 {
-    [ServiceContract]
+    public interface IServerCallback
+    {
+        [OperationContract(IsOneWay = true)]
+        void FetchLobbies();
+    }
+
+    [ServiceContract (CallbackContract =typeof(IServerCallback))]
     public interface ServerInterface
     {
         [OperationContract]
@@ -35,5 +41,11 @@ namespace ClassLibrary1
 
         [OperationContract]
         void LeaveLobby(string lobbyName, string username);
+
+        [OperationContract]
+        void Subscribe();
+
+        [OperationContract]
+        void Unsubscribe();
     }
 }

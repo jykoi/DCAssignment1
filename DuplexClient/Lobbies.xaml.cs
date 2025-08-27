@@ -1,0 +1,117 @@
+﻿using LobbyServer;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using System.Windows.Threading;
+
+namespace ClientApp
+{
+    /// <summary>
+    /// Interaction logic for Lobbies.xaml
+    /// </summary>
+    public partial class Lobbies : Window
+    {
+        private readonly ClientServices _client;
+
+
+        //Must pass ClientServices instance to preserve the existing connection
+        public Lobbies(ClientServices clientServices)
+        {
+            
+            InitializeComponent();
+            _client = clientServices;
+            
+        }
+
+        public void LoadLobbies()
+        {
+
+            LobbiesList.ItemsSource = _client.Lobbies;
+
+            Status.Text = $"Loaded {_client.Lobbies.Count} lobby(ies).";
+
+        }
+
+        private void LobbiesWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            // windows is loaded but this code is not working
+            _client.OnLobbyCreated = () =>
+            {
+                Dispatcher.Invoke(() => LoadLobbies());
+            };
+            LoadLobbies();
+            
+        }
+
+
+        private void newLobbyBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Lobby lobby;
+            string newLobbyName = newLobbyField.Text;
+            if (_client.serverChannel.CreateLobby(newLobbyName, _client.Username, out lobby))
+            {
+                newLobbyField.Text = "Created successfully";
+                LoadNewLobby(newLobbyName);
+            }
+            else
+            {
+                newLobbyField.Text = "could not create lobby";
+            }
+        }
+
+        private void LoadNewLobby(string lobbyName)
+        {
+            LobbyRoom lobbyRoom = new LobbyRoom(_client, lobbyName, this);
+            lobbyRoom.Show();
+
+            this.Hide();
+        }
+
+        private void JoinButton_Click(object sender, RoutedEventArgs e)
+        {
+            string selectedLobby = (LobbiesList.SelectedItem ?? String.Empty).ToString();
+
+            if (string.IsNullOrEmpty(selectedLobby))
+            {
+                MessageBox.Show("Please select a lobby to join.");
+                return;
+            }
+
+            _client.serverChannel.JoinLobby(selectedLobby, _client.Username);
+            LoadNewLobby(selectedLobby);
+
+        }
+
+        private void logoutBtn_Click(object sender, RoutedEventArgs e)
+        {
+            _client.Logout();
+            _client.Disconnect();
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.Show();
+            this.Close();
+        }
+
+        void Lobbies_Closing(object sender, CancelEventArgs e)
+        {
+            // Ensure the client disconnects when the window is closed
+            if (_client.IsConnected())
+            {
+                _client.Logout();
+                _client.Disconnect();
+            }
+        }
+
+    }
+}

@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LobbyServer", "LobbyServer\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterfaceLibrary", "InterfaceLibrary\InterfaceLibrary.csproj", "{91DEA41E-7429-4164-9332-0BF45A30989F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DuplexClient", "DuplexClient\DuplexClient.csproj", "{BE27E262-0AF1-4FFF-A941-BB8A87586CC3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{91DEA41E-7429-4164-9332-0BF45A30989F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91DEA41E-7429-4164-9332-0BF45A30989F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91DEA41E-7429-4164-9332-0BF45A30989F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE27E262-0AF1-4FFF-A941-BB8A87586CC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE27E262-0AF1-4FFF-A941-BB8A87586CC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE27E262-0AF1-4FFF-A941-BB8A87586CC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE27E262-0AF1-4FFF-A941-BB8A87586CC3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
