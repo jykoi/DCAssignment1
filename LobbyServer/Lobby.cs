@@ -4,6 +4,9 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using ServerDLL;
+using InterfaceLibrary;
+
 
 namespace LobbyServer
 {
@@ -18,6 +21,14 @@ namespace LobbyServer
         private string _name;
 
         [DataMember]
+        private readonly object _chatLock = new object();
+        [DataMember]
+        private readonly List<ChatMessage> _messages = new List<ChatMessage>();
+        [DataMember]
+        private int _nextMessageId = 1;
+        [DataMember]
+
+
         public string Name
         {
             get => _name;
@@ -85,6 +96,46 @@ namespace LobbyServer
             return _players.ToArray();
             
         }
-    }
 
+        public int AddLobbyMessage(string fromUser, string text)
+        {
+            var msg = new ChatMessage
+            {
+                Id = _nextMessageId++,
+                FromUser = fromUser,
+                Text = text,
+                Timestamp = System.DateTime.UtcNow
+            };
+
+            lock (_chatLock)
+            {
+                _messages.Add(msg);
+                // cap to last 500 messages
+                if (_messages.Count > 500)
+                    _messages.RemoveRange(0, _messages.Count - 500);
+            }
+            return msg.Id;
+        }
+
+        public List<ChatMessage> GetMessagesSince(int afterId, int max)
+        {
+            lock (_chatLock)
+            {
+                return _messages
+                    .Where(m => m.Id > afterId)
+                    .OrderBy(m => m.Id)
+                    .Take(max)
+                    .ToList();
+            }
+        }
+
+        public int CurrentMaxId()
+        {
+            lock (_chatLock) return _messages.Count == 0 ? 0 : _messages[_messages.Count - 1].Id;
+        }
+    }
 }
+
+
+    
+

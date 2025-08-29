@@ -80,7 +80,20 @@ namespace LobbyServer
                 return _lobbies.Any(l =>
                     string.Equals((l.Name ?? string.Empty).Trim(), lobbyName, StringComparison.Ordinal));
             }
-        }    
-        
+        }
+
+        public static Lobby GetLobbyByName(string lobbyName)
+        {
+            lobbyName = (lobbyName ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(lobbyName)) return null;
+
+            lock (LobbiesLock)
+            {
+                return _lobbies.FirstOrDefault(l =>
+                    string.Equals((l.Name ?? string.Empty).Trim(), lobbyName, StringComparison.Ordinal));
+            }
+        }
+
+
     }
 }

@@ -60,6 +60,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="LobbyChatWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="LobbyRoom.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -79,6 +83,9 @@
     <Compile Include="ClientServices.cs" />
     <Compile Include="Lobbies.xaml.cs">
       <DependentUpon>Lobbies.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LobbyChatWindow.xaml.cs">
+      <DependentUpon>LobbyChatWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="LobbyRoom.xaml.cs">
       <DependentUpon>LobbyRoom.xaml</DependentUpon>
@@ -118,13 +125,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ClassLibrary1\ServerDLL.csproj">
-      <Project>{c7d8d9fc-70ad-4efe-ab53-513feae2360b}</Project>
-      <Name>ServerDLL</Name>
-    </ProjectReference>
     <ProjectReference Include="..\InterfaceLibrary\InterfaceLibrary.csproj">
       <Project>{91dea41e-7429-4164-9332-0bf45a30989f}</Project>
       <Name>InterfaceLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ServerDLL\ServerDLL.csproj">
+      <Project>{c7d8d9fc-70ad-4efe-ab53-513feae2360b}</Project>
+      <Name>ServerDLL</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
