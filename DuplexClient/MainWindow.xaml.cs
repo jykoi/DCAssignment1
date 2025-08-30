@@ -1,5 +1,4 @@
-﻿using ClassLibrary1;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
@@ -15,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ClientApp
+namespace DuplexClient
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

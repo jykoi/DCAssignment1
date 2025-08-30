@@ -13,11 +13,11 @@ using LobbyServer;
 namespace LobbyServer
 {
     [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false, InstanceContextMode = InstanceContextMode.PerSession)]
-    internal class ServerImplementation : ServerInterface
+    internal class ServerImplementation : ServerInterface, ServerInterfaceDuplex
     {
         // maintain a dicitonary of connected duplex clients
         private static Dictionary<string, IServerCallback> _clients = new Dictionary<string, IServerCallback>();
-        private static readonly object _lock = new object();
+        private static readonly object _duplexLock = new object();
         private bool isDuplexClient = false;
         private class Conversation
         {
@@ -69,6 +69,10 @@ namespace LobbyServer
             var lobby = new Lobby(lobbyName);
             LobbyManager.AddLobby(lobby);
             JoinLobby(lobbyName, ownerName);
+            foreach (var client in _clients)
+            {
+                client.Value.FetchLobbies();
+            }
             return true;
         }
 
@@ -152,7 +156,7 @@ namespace LobbyServer
             {
                 string clientId = OperationContext.Current.SessionId;
                 IServerCallback callback = OperationContext.Current.GetCallbackChannel<IServerCallback>();
-                lock (_lock)
+                lock (_duplexLock)
                 {
                     if (!_clients.ContainsKey(clientId))
                     {
@@ -174,7 +178,7 @@ namespace LobbyServer
             if (isDuplexClient)
             {
                 string clientId = OperationContext.Current.SessionId;
-                lock (_lock)
+                lock (_duplexLock)
                 {
                     if (_clients.ContainsKey(clientId))
                     {
@@ -194,6 +198,11 @@ namespace LobbyServer
             if (lobby == null) return false;
 
             lobby.AddLobbyMessage(fromUser, text.Trim());
+
+            foreach (var client in _clients)
+            {
+                client.Value.FetchLobbyMessages();
+            }
             return true;
         }
 

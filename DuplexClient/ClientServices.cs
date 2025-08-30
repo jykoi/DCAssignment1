@@ -1,5 +1,6 @@
-﻿using ClassLibrary1;
+﻿using InterfaceLibrary;
 using LobbyServer;
+using ServerDLL;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,19 +9,24 @@ using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClientApp
+namespace DuplexClient
 {
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public class ClientServices : IServerCallback
     {
-        public ServerInterface serverChannel;
+        public ServerInterfaceDuplex serverChannel;
         private NetTcpBinding tcp;
         private string URL = "net.tcp://localhost:8200/DataService";
-        private DuplexChannelFactory<ServerInterface> chanFactory;
+        private DuplexChannelFactory<ServerInterfaceDuplex> chanFactory;
 
         private List<string> _lobbies = new List<string>();
         //Fired when a new lobby is created
         public Action OnLobbyCreated;
+        public Action OnMessageSent;
+
+        public string CurrentLobbyName = "";
+        public int LastMsgId = 0;
+        public MessagesPage CurrentLobbyMessages = null;
 
         public List<string> Lobbies
         {
@@ -37,13 +43,14 @@ namespace ClientApp
 
         public ClientServices(string username)
         {
+            
             this.username = username;
         }
 
         public void Connect()
         {
             tcp = new NetTcpBinding();
-            chanFactory = new DuplexChannelFactory<ServerInterface>(this, tcp, URL);
+            chanFactory = new DuplexChannelFactory<ServerInterfaceDuplex>(this, tcp, URL);
             serverChannel = chanFactory.CreateChannel();
             serverChannel.Subscribe();
         }
@@ -87,6 +94,16 @@ namespace ClientApp
             _lobbies = lobbies;
             // Notify that lobbies have been updated
             OnLobbyCreated?.Invoke();
+        }
+
+        public void FetchLobbyMessages()
+        {
+            
+            var messages = serverChannel.GetLobbyMessagesSince(CurrentLobbyName, LastMsgId, 100);
+            LastMsgId = messages.LastId;
+            CurrentLobbyMessages = messages;
+            OnMessageSent?.Invoke();
+            Trace.WriteLine("Lobby name: " + CurrentLobbyName);
         }
     }
 }

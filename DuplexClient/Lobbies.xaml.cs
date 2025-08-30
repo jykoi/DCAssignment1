@@ -16,7 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-namespace ClientApp
+namespace DuplexClient
 {
     /// <summary>
     /// Interaction logic for Lobbies.xaml
@@ -59,10 +59,11 @@ namespace ClientApp
         private void newLobbyBtn_Click(object sender, RoutedEventArgs e)
         {
             string newLobbyName = newLobbyField.Text;
-            if (_client.serverChannel.CreateLobby(newLobbyName, _client.Username, out lobby))
+            if (_client.serverChannel.CreateLobby(newLobbyName, _client.Username))
             {
                 newLobbyField.Text = "Created successfully";
                 LoadNewLobby(newLobbyName);
+                _client.CurrentLobbyName = newLobbyName;
             }
             else
             {
@@ -72,8 +73,8 @@ namespace ClientApp
 
         private void LoadNewLobby(string lobbyName)
         {
-            LobbyRoom lobbyRoom = new LobbyRoom(_client, lobbyName, this);
-            lobbyRoom.Show();
+            LobbyWindow lobbyWindow = new LobbyWindow(_client, lobbyName, this);
+            lobbyWindow.Show();
 
             this.Hide();
         }
@@ -89,6 +90,7 @@ namespace ClientApp
             }
 
             _client.serverChannel.JoinLobby(selectedLobby, _client.Username);
+            _client.CurrentLobbyName = selectedLobby;
             LoadNewLobby(selectedLobby);
 
         }

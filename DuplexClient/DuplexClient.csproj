@@ -118,7 +118,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ClassLibrary1\ServerDLL.csproj">
+    <ProjectReference Include="..\ClientApp\ClientApp.csproj">
+      <Project>{813bf54b-ce53-465d-9935-560e08c2f2a7}</Project>
+      <Name>ClientApp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ServerDLL\ServerDLL.csproj">
       <Project>{c7d8d9fc-70ad-4efe-ab53-513feae2360b}</Project>
       <Name>ServerDLL</Name>
     </ProjectReference>

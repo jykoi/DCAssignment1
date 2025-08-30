@@ -1,7 +1,7 @@
-﻿<Application x:Class="DuplexClient.App"
+﻿<Application x:Class="ClientApp.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:DuplexClient"
+             xmlns:local="clr-namespace:ClientApp"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          
