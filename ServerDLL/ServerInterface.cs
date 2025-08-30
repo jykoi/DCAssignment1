@@ -44,8 +44,18 @@ namespace ServerDLL
         MessagesPage GetPrivateMessagesSince(string user1, string user2, int afterId, int max = 100);
     }
 
+    [ServiceContract(CallbackContract = typeof(IServerCallback))]
+    public interface ServerInterfaceDuplex : ServerInterface
+    {
+        [OperationContract]
+        void Subscribe();
+        [OperationContract]
+        void Unsubscribe();
+    }
+
     public interface IServerCallback
     {
-
+        [OperationContract(IsOneWay = true)]
+        void FetchLobbies();
     }
 }

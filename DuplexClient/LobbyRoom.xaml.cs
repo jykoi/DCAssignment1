@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace ClientApp
+namespace DuplexClient
 {
     /// <summary>
     /// Interaction logic for LobbyRoom.xaml

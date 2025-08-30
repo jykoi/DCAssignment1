@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DuplexClient.Properties
+namespace ClientApp.Properties
 {
 
 
