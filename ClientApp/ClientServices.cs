@@ -1,4 +1,5 @@
-﻿using ClassLibrary1;
+﻿using ServerDLL;
+using InterfaceLibrary;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,10 +62,25 @@ namespace ClientApp
                 }
                 catch (Exception)
                 {
-                    return false; // If an exception occurs, we assume the connection is not valid
+                    return false; 
                 }
             }
-            return false; // If serverChannel is null, we are not connected
+            return false; 
         }
+
+        // Lobby chat
+        public bool PostLobbyMessage(string lobby, string fromUser, string text)
+            => serverChannel.PostLobbyMessage(lobby, fromUser, text);
+
+        public MessagesPage GetLobbyMessagesSince(string lobby, int afterId, int max = 100)
+            => serverChannel.GetLobbyMessagesSince(lobby, afterId, max);
+
+        // DMs
+        public bool SendPrivateMessage(string fromUser, string toUser, string text)
+            => serverChannel.SendPrivateMessage(fromUser, toUser, text);
+
+        public MessagesPage GetPrivateMessagesSince(string u1, string u2, int afterId, int max = 100)
+            => serverChannel.GetPrivateMessagesSince(u1, u2, afterId, max);
     }
 }
+

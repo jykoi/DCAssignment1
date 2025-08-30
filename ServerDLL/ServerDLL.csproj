@@ -7,8 +7,8 @@
     <ProjectGuid>{C7D8D9FC-70AD-4EFE-AB53-513FEAE2360B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ClassLibrary1</RootNamespace>
-    <AssemblyName>ClassLibrary1</AssemblyName>
+    <RootNamespace>ServerDLL</RootNamespace>
+    <AssemblyName>ServerDLL</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -43,10 +43,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Lobby.cs" />
-    <Compile Include="LobbyManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UserManager.cs" />
+    <Compile Include="ServerInterface.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\InterfaceLibrary\InterfaceLibrary.csproj">
+      <Project>{91dea41e-7429-4164-9332-0bf45a30989f}</Project>
+      <Name>InterfaceLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
