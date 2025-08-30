@@ -27,7 +27,7 @@ namespace DuplexClient
             Title = $"Lobby: {_lobbyName} — You: {_client.Username}";
 
             _cts = new CancellationTokenSource();
-            Loaded += (_, __) => _ = StartPollingAsync(_cts.Token);
+            Loaded += Init;
             Closing += LobbyWindow_Closing;
         }
 
@@ -53,36 +53,26 @@ namespace DuplexClient
             }
         }
 
-        // Poll 
-        private async Task StartPollingAsync(CancellationToken token)
+        private void Init(object sender, RoutedEventArgs e)
         {
-            while (!token.IsCancellationRequested && _client.IsConnected())
+            
+
+            _client.OnMessageSent = () =>
             {
-                try
-                {
-                    var page = _client.serverChannel.GetLobbyMessagesSince(_lobbyName, _lastMsgId, 100);
-                    if (page?.Items != null && page.Items.Count > 0)
-                    {
-                        await Dispatcher.InvokeAsync(() =>
-                        {
-                            foreach (var m in page.Items)
-                                ChatList.Items.Add($"[{m.Timestamp:t}] {m.FromUser}: {m.Text}");
-                        });
-                        _lastMsgId = page.LastId;
-                    }
+                Dispatcher.Invoke(() => LoadMessages());
+            };
+            
+            _client.FetchLobbyMessages();
+        }
 
-                    await Dispatcher.InvokeAsync(() =>
-                        Status.Text = $"Loaded up to #{_lastMsgId}");
-                }
-                catch (TaskCanceledException) { break; }
-                catch (Exception ex)
-                {
-                    await Dispatcher.InvokeAsync(() =>
-                        Status.Text = $"Poll error: {ex.Message}");
-                }
-
-                try { await Task.Delay(1500, token); } catch { break; }
+        private void LoadMessages()
+        {
+            var page = _client.CurrentLobbyMessages;
+            foreach (var m in page.Items)
+            {
+                ChatList.Items.Add($"[{m.Timestamp:t}] {m.FromUser}: {m.Text}");
             }
+            
         }
 
         // Refresh 
@@ -97,6 +87,7 @@ namespace DuplexClient
         private async void LeaveBtn_Click(object sender, RoutedEventArgs e)
         {
             await LeaveAndReturnAsync();
+            _client.CurrentLobbyName = "";
         }
 
         private async Task LeaveAndReturnAsync()
@@ -123,7 +114,9 @@ namespace DuplexClient
 
         private void LobbyWindow_Closing(object sender, CancelEventArgs e)
         {
-            
+            _client.CurrentLobbyName = "";
+            _client.LastMsgId = 0;
+            _client.OnMessageSent = null;
             if (!_cts.IsCancellationRequested)
             {
                 e.Cancel = true;              

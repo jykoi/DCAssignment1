@@ -198,6 +198,11 @@ namespace LobbyServer
             if (lobby == null) return false;
 
             lobby.AddLobbyMessage(fromUser, text.Trim());
+
+            foreach (var client in _clients)
+            {
+                client.Value.FetchLobbyMessages();
+            }
             return true;
         }
 

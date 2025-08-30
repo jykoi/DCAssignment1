@@ -63,6 +63,7 @@ namespace DuplexClient
             {
                 newLobbyField.Text = "Created successfully";
                 LoadNewLobby(newLobbyName);
+                _client.CurrentLobbyName = newLobbyName;
             }
             else
             {
@@ -89,6 +90,7 @@ namespace DuplexClient
             }
 
             _client.serverChannel.JoinLobby(selectedLobby, _client.Username);
+            _client.CurrentLobbyName = selectedLobby;
             LoadNewLobby(selectedLobby);
 
         }

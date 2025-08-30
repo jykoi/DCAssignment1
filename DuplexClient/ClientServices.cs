@@ -1,4 +1,5 @@
-﻿using LobbyServer;
+﻿using InterfaceLibrary;
+using LobbyServer;
 using ServerDLL;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,11 @@ namespace DuplexClient
         private List<string> _lobbies = new List<string>();
         //Fired when a new lobby is created
         public Action OnLobbyCreated;
+        public Action OnMessageSent;
+
+        public string CurrentLobbyName = "";
+        public int LastMsgId = 0;
+        public MessagesPage CurrentLobbyMessages = null;
 
         public List<string> Lobbies
         {
@@ -88,6 +94,16 @@ namespace DuplexClient
             _lobbies = lobbies;
             // Notify that lobbies have been updated
             OnLobbyCreated?.Invoke();
+        }
+
+        public void FetchLobbyMessages()
+        {
+            
+            var messages = serverChannel.GetLobbyMessagesSince(CurrentLobbyName, LastMsgId, 100);
+            LastMsgId = messages.LastId;
+            CurrentLobbyMessages = messages;
+            OnMessageSent?.Invoke();
+            Trace.WriteLine("Lobby name: " + CurrentLobbyName);
         }
     }
 }
