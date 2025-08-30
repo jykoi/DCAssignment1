@@ -62,10 +62,9 @@ namespace LobbyServer
 
         public bool CreateLobby(string lobbyName, string ownerName)
         {
-            if (string.IsNullOrWhiteSpace(lobbyName) || LobbyManager.LobbyExists(lobbyName))
+            if (string.IsNullOrWhiteSpace(lobbyName) || LobbyManager.LobbyExists(lobbyName)) {
                 return false;
             }
-            
 
             var lobby = new Lobby(lobbyName);
             LobbyManager.AddLobby(lobby);

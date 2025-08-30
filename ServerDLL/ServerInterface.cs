@@ -43,4 +43,9 @@ namespace ServerDLL
         [OperationContract]
         MessagesPage GetPrivateMessagesSince(string user1, string user2, int afterId, int max = 100);
     }
+
+    public interface IServerCallback
+    {
+
+    }
 }
