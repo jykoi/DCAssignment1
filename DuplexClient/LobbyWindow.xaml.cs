@@ -72,15 +72,16 @@ namespace DuplexClient
             {
                 ChatList.Items.Add($"[{m.Timestamp:t}] {m.FromUser}: {m.Text}");
             }
-            
+            Status.Text = $"Loaded {page.Items.Count} message(s).";
+
         }
 
         // Refresh 
         private void RefreshBtn_Click(object sender, RoutedEventArgs e)
         {
-            _lastMsgId = 0;
             ChatList.Items.Clear();
-            Status.Text = "Refreshing…";
+            _client.LastMsgId = 0;
+            _client.FetchLobbyMessages();
         }
 
         //  Leave / Close 

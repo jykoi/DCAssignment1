@@ -72,7 +72,7 @@ namespace ClientApp
                     }
 
                     await Dispatcher.InvokeAsync(() =>
-                        Status.Text = $"Loaded up to #{_lastMsgId}");
+                        Status.Text = $"Loaded {_lastMsgId} Message(s).");
                 }
                 catch (TaskCanceledException) { break; }
                 catch (Exception ex)
