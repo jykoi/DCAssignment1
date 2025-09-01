@@ -39,7 +39,7 @@
             </Grid>
             <StackPanel Grid.Column="1" Margin="12,0,0,0">
                 <TextBlock Text="Players" FontWeight="Bold" Margin="0,0,0,6"/>
-                <ListBox x:Name="PlayersList" Margin="0,0,0,8"/>
+                <ListBox x:Name="PlayersList" Margin="0,0,0,8" MouseDoubleClick="PlayersList_MouseDoubleClick"/>
                 <Button x:Name="MessageBtn"
             Content="Message"
             Width="100" Height="30"

@@ -254,7 +254,7 @@ namespace LobbyServer
 
             foreach (var client in _clients)
             {
-                client.Value.FetchLobbyMessages(); // reuse existing callback so clients pull DMs too
+                client.Value.FetchPrivateMessages();
             }
             return true;
         }

@@ -74,5 +74,7 @@ namespace ServerDLL
         void FetchLobbyMessages();
         [OperationContract(IsOneWay = true)]
         void FetchPlayersList();
+        [OperationContract(IsOneWay = true)]
+        void FetchPrivateMessages();
     }
 }

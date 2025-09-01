@@ -51,7 +51,14 @@ namespace DuplexClient
 
         private void MessageButton_Click(object sender, RoutedEventArgs e)
         {
+            var peer = PlayersList.SelectedItem as string;
+            OpenPrivateChat(peer);
+        }
 
+        private void PlayersList_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var peer = PlayersList.SelectedItem as string;
+            OpenPrivateChat(peer);
         }
 
         private void SharedFilesList_MouseDoubleClick(object sender, RoutedEventArgs e)
@@ -62,6 +69,17 @@ namespace DuplexClient
         private void ShareFileBtn_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void OpenPrivateChat(string peerUser)
+        {
+            if (string.IsNullOrWhiteSpace(peerUser) ||
+                string.Equals(peerUser, _client.Username, StringComparison.OrdinalIgnoreCase))
+                return;
+
+            var win = new PrivateChatWindow(_client.Username, peerUser, _client);
+            win.Owner = this;
+            win.Show();
         }
 
         private async Task LoadPlayers()
@@ -157,5 +175,7 @@ namespace DuplexClient
                 _ = LeaveAndReturnAsync();
             }
         }
+
+        
     }
 }

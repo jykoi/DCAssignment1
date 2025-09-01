@@ -24,12 +24,17 @@ namespace DuplexClient
         public Action OnLobbyCreated;
         public Action OnMessageSent;
         public Action OnPlayerJoined;
+        public Action OnDMSent;
 
         public string CurrentLobbyName = "";
         public int LastMsgId = 0;
         public MessagesPage CurrentLobbyMessages = null;
 
+        public string Peer = "";
+        public int LastDMId = 0;
+
         public string[] CurrentPlayers = Array.Empty<string>();
+        public MessagesPage CurrentDMs = null;
 
         public int LastFileId = 0;
 
@@ -118,5 +123,19 @@ namespace DuplexClient
             OnPlayerJoined?.Invoke();
             Trace.WriteLine("Lobby name: " + CurrentLobbyName);
         }
+        public void FetchPrivateMessages()
+        {
+            var messages = serverChannel.GetPrivateMessagesSince(Username, Peer, LastDMId, 100);
+            LastDMId = messages.LastId;
+            CurrentDMs = messages;
+            OnDMSent?.Invoke();
+        }
+        public LobbyFileInfo[] GetLobbyFilesSince(string lobby, int afterId, int max = 100)
+            => serverChannel.GetLobbyFilesSince(lobby, afterId, max);
+
+        public byte[] DownloadLobbyFile(string lobby, int fileId)
+            => serverChannel.DownloadLobbyFile(lobby, fileId);
+
+        
     }
 }
