@@ -242,6 +242,11 @@ namespace LobbyServer
                 if (conv.Messages.Count > 500)
                     conv.Messages.RemoveRange(0, conv.Messages.Count - 500);
             }
+
+            foreach (var client in _clients)
+            {
+                client.Value.FetchLobbyMessages(); // reuse existing callback so clients pull DMs too
+            }
             return true;
         }
 
@@ -273,6 +278,48 @@ namespace LobbyServer
 
             
             return lobby.GetPlayersSnapshot().ToArray();
+        }
+
+
+        // File sharing
+        public bool UploadLobbyFile(string lobbyName, string fromUser, string fileName, byte[] content, string contentType)
+        {
+            if (string.IsNullOrWhiteSpace(lobbyName) ||string.IsNullOrWhiteSpace(fromUser) || string.IsNullOrWhiteSpace(fileName) ||
+                content == null || content.Length == 0 || string.IsNullOrWhiteSpace(contentType))
+                return false;
+
+            var lobby = LobbyManager.GetLobbyByName(lobbyName);
+            if (lobby == null) return false;
+
+            var newId = lobby.AddLobbyFile(fromUser, fileName.Trim(), content, contentType.Trim());
+            if (newId <= 0) return false;
+
+            // Tell any duplex clients to refresh their view and pull latest files (reuse FetchLobbyMessages(), the existing callback)
+            foreach (var client in _clients)
+            {
+                try { client.Value.FetchLobbyMessages(); } catch { /*ignore if one client's callback channel is broken to prevent server crashing*/ }
+            }
+
+            return true;
+        }
+
+        // Return file metadata since a given ID (for polling or refresh)
+        public InterfaceLibrary.LobbyFileInfo[] GetLobbyFilesSince(string lobbyName, int afterId, int max = 100)
+        {
+            var lobby = LobbyManager.GetLobbyByName(lobbyName);
+            if (lobby == null) return new InterfaceLibrary.LobbyFileInfo[0];
+
+            var items = lobby.GetFilesSince(afterId, max);
+            return items.ToArray();
+        }
+
+        // Return actual file bytes for a specific file ID
+        public byte[] DownloadLobbyFile(string lobbyName, int fileId)
+        {
+            var lobby = LobbyManager.GetLobbyByName(lobbyName);
+            if (lobby == null) return null;
+
+            return lobby.DownloadFile(fileId);
         }
 
 

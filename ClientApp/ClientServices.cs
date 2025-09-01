@@ -75,12 +75,24 @@ namespace ClientApp
         public MessagesPage GetLobbyMessagesSince(string lobby, int afterId, int max = 100)
             => serverChannel.GetLobbyMessagesSince(lobby, afterId, max);
 
+
         // DMs
         public bool SendPrivateMessage(string fromUser, string toUser, string text)
             => serverChannel.SendPrivateMessage(fromUser, toUser, text);
 
         public MessagesPage GetPrivateMessagesSince(string u1, string u2, int afterId, int max = 100)
             => serverChannel.GetPrivateMessagesSince(u1, u2, afterId, max);
+
+
+        // File sharing
+        public bool UploadLobbyFile(string lobby, string fromUser, string fileName, byte[] content, string contentType)
+            => serverChannel.UploadLobbyFile(lobby, fromUser, fileName, content, contentType);
+
+        public LobbyFileInfo[] GetLobbyFilesSince(string lobby, int afterId, int max = 100)
+            => serverChannel.GetLobbyFilesSince(lobby, afterId, max);
+
+        public byte[] DownloadLobbyFile(string lobby, int fileId)
+            => serverChannel.DownloadLobbyFile(lobby, fileId);
     }
 }
 
