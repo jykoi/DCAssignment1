@@ -23,10 +23,15 @@ namespace DuplexClient
         //Fired when a new lobby is created
         public Action OnLobbyCreated;
         public Action OnMessageSent;
+        public Action OnPlayerJoined;
 
         public string CurrentLobbyName = "";
         public int LastMsgId = 0;
         public MessagesPage CurrentLobbyMessages = null;
+
+        public string[] CurrentPlayers = Array.Empty<string>();
+
+        public int LastFileId = 0;
 
         public List<string> Lobbies
         {
@@ -103,6 +108,14 @@ namespace DuplexClient
             LastMsgId = messages.LastId;
             CurrentLobbyMessages = messages;
             OnMessageSent?.Invoke();
+            
+        }
+
+        public void FetchPlayersList()
+        {
+            var players = serverChannel.GetPlayers(CurrentLobbyName) ?? Array.Empty<string>();
+            CurrentPlayers = players;
+            OnPlayerJoined?.Invoke();
             Trace.WriteLine("Lobby name: " + CurrentLobbyName);
         }
     }

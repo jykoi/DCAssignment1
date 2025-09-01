@@ -31,6 +31,49 @@ namespace DuplexClient
             Closing += LobbyWindow_Closing;
         }
 
+        private void Init(object sender, RoutedEventArgs e)
+        {
+
+
+            _client.OnMessageSent = () =>
+            {
+                Dispatcher.Invoke(() => LoadMessages());
+            };
+
+            _client.OnPlayerJoined = () =>
+            {
+                Dispatcher.Invoke(() => LoadPlayers());
+            };
+
+            _client.FetchLobbyMessages();
+            _client.FetchPlayersList();
+        }
+
+        private void MessageButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void SharedFilesList_MouseDoubleClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ShareFileBtn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private async Task LoadPlayers()
+        {
+            var players = _client.CurrentPlayers;
+            await Dispatcher.InvokeAsync(() =>
+            {
+                PlayersList.ItemsSource = players;
+            });
+        }
+
+
         // Send
         private void SendMessage_Click(object sender, RoutedEventArgs e)
         {
@@ -53,17 +96,7 @@ namespace DuplexClient
             }
         }
 
-        private void Init(object sender, RoutedEventArgs e)
-        {
-            
-
-            _client.OnMessageSent = () =>
-            {
-                Dispatcher.Invoke(() => LoadMessages());
-            };
-            
-            _client.FetchLobbyMessages();
-        }
+        
 
         private void LoadMessages()
         {

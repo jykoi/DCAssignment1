@@ -72,6 +72,7 @@ namespace LobbyServer
             foreach (var client in _clients)
             {
                 client.Value.FetchLobbies();
+                
             }
             return true;
         }
@@ -126,6 +127,10 @@ namespace LobbyServer
                     lobbyFound = true;
                 }
             }
+            foreach (var client in _clients)
+            {
+                client.Value.FetchPlayersList();
+            }
         }
 
         public Lobby GetLobbyByName(string lobbyName)
@@ -146,6 +151,10 @@ namespace LobbyServer
             else
             {
                 Console.WriteLine($"User '{username}' could not leave lobby '{lobby.Name}' - an error occured.");
+            }
+            foreach (var client in _clients)
+            {
+                client.Value.FetchPlayersList();
             }
         }
 

@@ -64,6 +64,8 @@ namespace DuplexClient
                 newLobbyField.Text = "Created successfully";
                 LoadNewLobby(newLobbyName);
                 _client.CurrentLobbyName = newLobbyName;
+                // may need to fix later...
+                _client.CurrentPlayers = new string[] { _client.Username };
             }
             else
             {
