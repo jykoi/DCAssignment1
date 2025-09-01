@@ -116,7 +116,6 @@ namespace ClientApp
             }
         }
 
-        
 
         //Refresh file list once
         private void RefreshSharedFilesOnce()

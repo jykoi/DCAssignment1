@@ -147,7 +147,7 @@ namespace DuplexClient
                     return;
                 }
                 Status.Text = $"Shared: {fileName}";
-                RefreshSharedFilesOnceAsync();  
+                //RefreshSharedFilesOnceAsync();  
             }
             catch (Exception ex)
             {
