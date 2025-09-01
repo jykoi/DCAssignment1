@@ -130,7 +130,6 @@ namespace ClientApp
 
                 default:
                     // Unknown types are rejected by server unless they start with image/ or text/
-                    // Return text/plain for .md/.json if you want to allow them later.
                     return "application/octet-stream";
             }
         }
