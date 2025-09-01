@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Win32;                 
 using System.Collections.ObjectModel;  
-using System.IO;                       
+using System.IO;
+using ClientFunctions;
 
 namespace ClientApp
 {
@@ -90,7 +91,7 @@ namespace ClientApp
                 var path = dlg.FileName;
                 var fileName = System.IO.Path.GetFileName(path);
                 var bytes = File.ReadAllBytes(path);
-                var contentType = GetContentTypeFromPath(path);
+                var contentType = Functions.GetContentTypeFromPath(path);
 
                 //Server only accepts image/* or text/*
                 if (!(contentType.StartsWith("image/") || contentType.StartsWith("text/")))
@@ -115,28 +116,7 @@ namespace ClientApp
             }
         }
 
-        //Figure out content type from file extension 
-        private string GetContentTypeFromPath(string path)
-        {
-            var ext = (System.IO.Path.GetExtension(path) ?? string.Empty).ToLowerInvariant();
-
-            switch (ext)
-            {
-                case ".png": return "image/png";
-                case ".jpg":
-                case ".jpeg": return "image/jpeg";
-                case ".gif": return "image/gif";
-                case ".bmp": return "image/bmp";
-
-                case ".txt":
-                case ".log":
-                case ".csv": return "text/plain";
-
-                default:
-                    // Unknown types are rejected by server unless they start with image/ or text/
-                    return "application/octet-stream";
-            }
-        }
+        
 
         //Refresh file list once
         private void RefreshSharedFilesOnce()

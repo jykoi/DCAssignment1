@@ -118,6 +118,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ClientFunctions\ClientFunctions.csproj">
+      <Project>{ffc0f47b-370c-40e3-86ad-e71009161776}</Project>
+      <Name>ClientFunctions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\InterfaceLibrary\InterfaceLibrary.csproj">
       <Project>{91dea41e-7429-4164-9332-0bf45a30989f}</Project>
       <Name>InterfaceLibrary</Name>

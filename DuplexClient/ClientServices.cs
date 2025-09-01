@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +26,7 @@ namespace DuplexClient
         public Action OnMessageSent;
         public Action OnPlayerJoined;
         public Action OnDMSent;
+        public Action OnFileSent;
 
         public string CurrentLobbyName = "";
         public int LastMsgId = 0;
@@ -37,6 +39,7 @@ namespace DuplexClient
         public MessagesPage CurrentDMs = null;
 
         public int LastFileId = 0;
+        public LobbyFileInfo[] CurrentLobbyFiles = null;
 
         public List<string> Lobbies
         {
@@ -130,11 +133,20 @@ namespace DuplexClient
             CurrentDMs = messages;
             OnDMSent?.Invoke();
         }
-        public LobbyFileInfo[] GetLobbyFilesSince(string lobby, int afterId, int max = 100)
-            => serverChannel.GetLobbyFilesSince(lobby, afterId, max);
+        public void FetchLobbyFiles()
+        {
+            var files = serverChannel.GetLobbyFilesSince(CurrentLobbyName, LastFileId, 100);
+            CurrentLobbyFiles = files;
+            
+            OnFileSent?.Invoke();
+        }
+
 
         public byte[] DownloadLobbyFile(string lobby, int fileId)
             => serverChannel.DownloadLobbyFile(lobby, fileId);
+
+        public bool UploadLobbyFile(string lobby, string fromUser, string fileName, byte[] content, string contentType)
+            => serverChannel.UploadLobbyFile(lobby, fromUser, fileName, content, contentType);
 
         
     }

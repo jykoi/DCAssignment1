@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerDLL", "ServerDLL\Serv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DuplexClient", "DuplexClient\DuplexClient.csproj", "{BE27E262-0AF1-4FFF-A941-BB8A87586CC3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientFunctions", "ClientFunctions\ClientFunctions.csproj", "{FFC0F47B-370C-40E3-86AD-E71009161776}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{BE27E262-0AF1-4FFF-A941-BB8A87586CC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE27E262-0AF1-4FFF-A941-BB8A87586CC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE27E262-0AF1-4FFF-A941-BB8A87586CC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFC0F47B-370C-40E3-86AD-E71009161776}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFC0F47B-370C-40E3-86AD-E71009161776}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFC0F47B-370C-40E3-86AD-E71009161776}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFC0F47B-370C-40E3-86AD-E71009161776}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

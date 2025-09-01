@@ -306,7 +306,7 @@ namespace LobbyServer
             // Tell any duplex clients to refresh their view and pull latest files (reuse FetchLobbyMessages(), the existing callback)
             foreach (var client in _clients)
             {
-                try { client.Value.FetchLobbyMessages(); } catch { /*ignore if one client's callback channel is broken to prevent server crashing*/ }
+                try { client.Value.FetchLobbyFiles(); } catch { /*ignore if one client's callback channel is broken to prevent server crashing*/ }
             }
 
             return true;
