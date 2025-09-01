@@ -11,5 +11,7 @@ namespace InterfaceLibrary
         [DataMember] public string ContentType { get; set; }  // Can be image files or text files.
         [DataMember] public string UploadedBy { get; set; }
         [DataMember] public DateTime UploadedAt { get; set; }
+        public override string ToString() => FileName ?? base.ToString();
+
     }
 }

@@ -32,6 +32,7 @@ namespace DuplexClient
             _lobbyName = lobbyName ?? throw new ArgumentNullException(nameof(lobbyName));
             _parent = parent ?? throw new ArgumentNullException(nameof(parent));
             SharedFilesList.ItemsSource = _files;
+            SharedFilesList.DisplayMemberPath = nameof(LobbyFileInfo.FileName); //Shows the correct file name.
 
             Title = $"Lobby: {_lobbyName} — You: {_client.Username}";
 

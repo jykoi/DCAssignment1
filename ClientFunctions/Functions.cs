@@ -16,14 +16,14 @@ namespace ClientFunctions
             switch (ext)
             {
                 case ".png": return "image/png";
-                case ".jpg":
-                case ".jpeg": return "image/jpeg";
-                case ".gif": return "image/gif";
+                //case ".jpg": return "image/png"
+;               //case ".jpeg": return "image/jpeg";
+                //case ".gif": return "image/gif";
                 case ".bmp": return "image/bmp";
 
-                case ".txt":
-                case ".log":
-                case ".csv": return "text/plain";
+                case ".txt": return "text/plain";
+                //case ".log":
+                //case ".csv": return "text/plain";
 
                 default:
                     // Unknown types are rejected by server unless they start with image/ or text/

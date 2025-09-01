@@ -69,7 +69,6 @@ namespace LobbyServer
             
         }
 
-        //TO BE FINISHED? Helper for future steps ie. join/create validation
         public static bool LobbyExists(string lobbyName)
         {
             lobbyName = (lobbyName ?? string.Empty).Trim();

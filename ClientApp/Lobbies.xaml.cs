@@ -93,7 +93,7 @@ namespace ClientApp
                 return;
             }
 
-            _client.serverChannel.JoinLobby(selectedLobby, _client.Username);
+            _client.serverChannel.JoinLobby(selectedLobby, _client.Username);         
             LoadNewLobby(selectedLobby);
         }
 
