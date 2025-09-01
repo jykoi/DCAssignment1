@@ -73,14 +73,18 @@ namespace ClientApp
         {
             try
             {
+                //Let user pick a file
                 var dlg = new OpenFileDialog
                 {
                     Title = "Select a file to share",
-                    Filter = "Images (*.png;*.jpg;*.jpeg;*.gif;*.bmp)|*.png;*.jpg;*.jpeg;*.gif;*.bmp|Text files (*.txt;*.log;*.csv)|*.txt;*.log;*.csv|All files (*.*)|*.*",
+                    Filter = "Images (*.png;*.jpg;*.jpeg;*.gif;*.bmp)|*.png;*.jpg;*.jpeg;*.gif;*.bmp|"+
+                                "Text files (*.txt;*.log;*.csv)|*.txt;*.log;*.csv|" +
+                                "All files (*.*)|*.*",
                     CheckFileExists = true,
                     Multiselect = false
                 };
 
+                //Stop if user cancels
                 if (dlg.ShowDialog(this) != true) return;
 
                 var path = dlg.FileName;
@@ -88,20 +92,20 @@ namespace ClientApp
                 var bytes = File.ReadAllBytes(path);
                 var contentType = GetContentTypeFromPath(path);
 
-                // server only accepts image/* or text/*
+                //Server only accepts image/* or text/*
                 if (!(contentType.StartsWith("image/") || contentType.StartsWith("text/")))
                 {
                     Status.Text = "Only image/text files are allowed.";
                     return;
                 }
 
+                //Try to upload
                 bool ok = _client.UploadLobbyFile(_lobbyName, _client.Username, fileName, bytes, contentType);
                 if (!ok)
                 {
                     Status.Text = "Upload failed.";
                     return;
                 }
-
                 Status.Text = $"Shared: {fileName}";
                 RefreshSharedFilesOnce();  // quick pull so it appears immediately
             }
@@ -111,7 +115,7 @@ namespace ClientApp
             }
         }
 
-        // Best-effort content type from file extension
+        //Figure out content type from file extension 
         private string GetContentTypeFromPath(string path)
         {
             var ext = (System.IO.Path.GetExtension(path) ?? string.Empty).ToLowerInvariant();
@@ -134,18 +138,20 @@ namespace ClientApp
             }
         }
 
-        // Pull any new files into the UI once (we'll add polling in the next step)
+        //Refresh file list once
         private void RefreshSharedFilesOnce()
         {
             try
             {
-                var page = _client.GetLobbyFilesSince(_lobbyName, _lastFileId, 100);
-                if (page != null && page.Length > 0)
+                var newFiles = _client.GetLobbyFilesSince(_lobbyName, _lastFileId, 100);
+                if (newFiles != null && newFiles.Length > 0)
                 {
-                    foreach (var f in page)
+                    foreach (var f in newFiles)
                         _files.Add(f);
 
-                    _lastFileId = _files.Count > 0 ? _files[_files.Count - 1].Id : _lastFileId;
+                    //Update last seen fileID
+                    if (_files.Count > 0)
+                        _lastFileId = _files[_files.Count - 1].Id;
                 }
             }
             catch (Exception ex)
