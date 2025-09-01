@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ClientFunctions
 {
+    // contains functions used by both clients to avoid duplication
     public static class Functions
     {
         public static string GetContentTypeFromPath(string path)
