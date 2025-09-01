@@ -42,6 +42,17 @@ namespace ServerDLL
 
         [OperationContract]
         MessagesPage GetPrivateMessagesSince(string user1, string user2, int afterId, int max = 100);
+
+        // File sharing
+        [OperationContract]
+        bool UploadLobbyFile(string lobbyName, string fromUser, string fileName, byte[] content, string contentType);
+
+        [OperationContract]
+        LobbyFileInfo[] GetLobbyFilesSince(string lobbyName, int afterId, int max = 100);
+
+        [OperationContract]
+        byte[] DownloadLobbyFile(string lobbyName, int fileId);
+
     }
 
     // inherits the base interface and adds duplex methods

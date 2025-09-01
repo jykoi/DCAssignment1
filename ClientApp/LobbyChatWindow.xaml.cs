@@ -33,6 +33,7 @@ namespace ClientApp
         private void LobbyWindow_Loaded(object sender, RoutedEventArgs e)
         {
             _ = StartPollingAsync(_cts.Token);
+
         }
 
         private void LobbyWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
