@@ -130,15 +130,32 @@ namespace DuplexClient
 
                 var path = dlg.FileName;
                 var fileName = System.IO.Path.GetFileName(path);
+
+                var ext = System.IO.Path.GetExtension(path)?.ToLowerInvariant();
+                if (ext != ".txt" && ext != ".bmp" && ext != ".png")
+                {
+                    Status.Text = "Only .txt and .bmp and .png files are allowed.";
+                    return;
+                }
+
                 var bytes = System.IO.File.ReadAllBytes(path);
+
+                const int MaxPayload = 60 * 1024; // 60 KB to stay under the default 64KB. so large files won't cause channel fault/crash
+
+                if (bytes.Length > MaxPayload)
+                {
+                    MessageBox.Show("File is too large!! Please use a smaller .txt or .bmp. or .png");
+                    return;
+                }
+
                 var contentType = Functions.GetContentTypeFromPath(path);
 
                 //Server only accepts image/* or text/*
-                if (!(contentType.StartsWith("image/") || contentType.StartsWith("text/")))
-                {
-                    Status.Text = "Only image/text files are allowed.";
-                    return;
-                }
+                //if (!(contentType.StartsWith("image/") || contentType.StartsWith("text/")))
+                //{
+                //    Status.Text = "Only image/text files are allowed.";
+                //    return;
+                //}
 
                 //Try to upload
                 bool ok = _client.UploadLobbyFile(_lobbyName, _client.Username, fileName, bytes, contentType);
@@ -148,7 +165,7 @@ namespace DuplexClient
                     return;
                 }
                 Status.Text = $"Shared: {fileName}";
-                //RefreshSharedFilesOnceAsync();  
+                  
             }
             catch (Exception ex)
             {
