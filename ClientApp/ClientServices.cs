@@ -29,11 +29,12 @@ namespace ClientApp
             this.username = username;
         }
 
-        public void Connect()
+        public bool Connect()
         {
             tcp = new NetTcpBinding();
             chanFactory = new ChannelFactory<ServerInterface>(tcp, URL);
             serverChannel = chanFactory.CreateChannel();
+            return serverChannel.AddUser(Username);
         }
 
         public void Disconnect()

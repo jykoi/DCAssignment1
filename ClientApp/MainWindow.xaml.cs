@@ -36,12 +36,12 @@ namespace ClientApp
 
             DisableGui();
             _client = new ClientServices(usernameField.Text.Trim());
-            Task connect = new Task(_client.Connect);
+            Task<bool> connect = new Task<bool>(_client.Connect);
             connect.Start();
-            await connect;
+            bool connected = await connect;
 
             //check that the username is valid & unique
-            if (!_client.serverChannel.AddUser(_client.Username))
+            if (!connected)
             {
                 //if not, end the connection
                 _client.Disconnect();
