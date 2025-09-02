@@ -20,7 +20,7 @@ namespace ClientApp
     public partial class MainWindow : Window
     {
 
-        ClientServices clientServices;
+        private ClientServices _client;
         public MainWindow()
         {
             InitializeComponent();
@@ -35,17 +35,17 @@ namespace ClientApp
             //start the connection process asynchronously using an instance of ClientServices
 
             DisableGui();
-            clientServices = new ClientServices(usernameField.Text.Trim());
-            Task connect = new Task(clientServices.Connect);
+            _client = new ClientServices(usernameField.Text.Trim());
+            Task connect = new Task(_client.Connect);
             connect.Start();
             await connect;
 
             //check that the username is valid & unique
-            if (!clientServices.serverChannel.AddUser(clientServices.Username))
+            if (!_client.serverChannel.AddUser(_client.Username))
             {
                 //if not, end the connection
-                clientServices.Disconnect();
-                usernameField.Text = "pick valid and unique username";
+                _client.Disconnect();
+                usernameField.Text = "pick a valid and unique username";
                 EnableGui();
             }
             else
@@ -55,7 +55,7 @@ namespace ClientApp
                 EnableGui();
 
 
-                Lobbies lobbiesWin = new Lobbies(clientServices);
+                Lobbies lobbiesWin = new Lobbies(_client);
                 lobbiesWin.Show();
                 this.Close();
             }
