@@ -30,34 +30,17 @@ namespace LobbyServer
 
             lock (LobbiesLock)
             {
+                //check if the lobby already exists
                 bool exists = _lobbies.Any(l => string.Equals((l.Name ?? string.Empty).Trim(), name, StringComparison.Ordinal));
 
                 if (!exists)
                 {
                     _lobbies.Add(lobby);
                 }
-                // redundant line?
-                //_lobbies.Add(lobby);
+
             }
         }
 
-        //readonly snapshot of lobbyNames for client display 
-        public static string[] GetLobbyNamesSnapshot()
-        {
-            
-            return _lobbies
-                .Select(l => (l.Name ?? string.Empty).Trim())
-                .Where(n => !string.IsNullOrWhiteSpace(n))
-                .ToArray();
-            
-        }
-
-        //public static List<Lobby> GetLobbiesSnapshot()
-        //{
-            
-        //    return new List<Lobby>(_lobbies);
-            
-        //}
 
         public static string[] GetLobbyNames()
         {
@@ -76,6 +59,7 @@ namespace LobbyServer
 
             lock (LobbiesLock)
             {
+                //compare the names of the lobbies
                 return _lobbies.Any(l =>
                     string.Equals((l.Name ?? string.Empty).Trim(), lobbyName, StringComparison.Ordinal));
             }
@@ -83,6 +67,7 @@ namespace LobbyServer
 
         public static Lobby GetLobbyByName(string lobbyName)
         {
+            //trim and validate the lobby name
             lobbyName = (lobbyName ?? string.Empty).Trim();
             if (string.IsNullOrWhiteSpace(lobbyName)) return null;
 

@@ -58,13 +58,15 @@ namespace DuplexClient
 
         private void newLobbyBtn_Click(object sender, RoutedEventArgs e)
         {
+            //get the name of the new lobby
             string newLobbyName = newLobbyField.Text;
+            //create the lobby and make sure it is created successfully
             if (_client.serverChannel.CreateLobby(newLobbyName, _client.Username))
             {
                 newLobbyField.Text = "Created successfully";
                 LoadNewLobby(newLobbyName);
                 _client.CurrentLobbyName = newLobbyName;
-                // may need to fix later...
+                //load the owner as the first player in the lobby (used in LobbyWindow later)
                 _client.CurrentPlayers = new string[] { _client.Username };
             }
             else

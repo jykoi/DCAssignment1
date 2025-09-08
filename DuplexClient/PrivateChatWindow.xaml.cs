@@ -33,10 +33,12 @@ namespace DuplexClient
 
         private void Init(object sender, RoutedEventArgs e)
         {
+            //call RefreshMessages when the event for sending a message is fired
             _client.OnDMSent = () =>
             {
                 Dispatcher.Invoke(() => RefreshMessages());
             };
+            //initial fetch of messages
             _client.FetchPrivateMessages();
         }
 
@@ -44,11 +46,14 @@ namespace DuplexClient
         {
             try
             {
+                //get the messages
                 var page = _client.CurrentDMs;
                 if (page?.Items != null)
                 {
+                    //add each message to the observable collection
                     foreach (var m in page.Items)
                         _items.Add(m);
+                    //update the last message id
                     _client.LastDMId = page.LastId;
                 }
             }
@@ -69,7 +74,6 @@ namespace DuplexClient
                 if (_client.serverChannel.SendPrivateMessage(_me, _peer, text))
                 {
                     InputBox.Clear();
-                    //RefreshMessages(); // optimistic refresh
                 }
             }
             catch { }
@@ -77,6 +81,7 @@ namespace DuplexClient
 
         protected override void OnClosed(EventArgs e)
         {
+            // clean up after closing the window.
             _client.Peer = "";
             _client.LastDMId = 0;
             _client.CurrentDMs = null;

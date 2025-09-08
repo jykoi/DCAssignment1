@@ -18,6 +18,7 @@ namespace LobbyServer
             var tcp = new NetTcpBinding();
 
             var host = new ServiceHost(typeof(ServerImplementation));
+            //two endpoints: one for normal clients, another for duplex clients
             host.AddServiceEndpoint(typeof(ServerInterface), tcp, "net.tcp://0.0.0.0:8100/DataService");
             host.AddServiceEndpoint(typeof(ServerInterfaceDuplex), tcp, "net.tcp://0.0.0.0:8200/DataService");
             host.Open();

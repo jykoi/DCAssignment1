@@ -37,14 +37,15 @@ namespace DuplexClient
             Title = $"Lobby: {_lobbyName} — You: {_client.Username}";
 
             _cts = new CancellationTokenSource();
+            //subscribe to Init when the window loads   
             Loaded += Init;
+            //subscribe to Closing event
             Closing += LobbyWindow_Closing;
         }
 
         private void Init(object sender, RoutedEventArgs e)
         {
-
-
+            //set functions that will be called when events happen on the server
             _client.OnMessageSent = () =>
             {
                 Dispatcher.Invoke(() => LoadMessages());
@@ -60,17 +61,20 @@ namespace DuplexClient
                 Dispatcher.Invoke(() => RefreshSharedFilesOnceAsync());
             };
 
+            // call the fetch functions to load any data on window load
             _client.FetchLobbyMessages();
             _client.FetchPlayersList();
             _client.FetchLobbyFiles();
         }
 
+        // opens private messages with the selected player
         private void MessageButton_Click(object sender, RoutedEventArgs e)
         {
             var peer = PlayersList.SelectedItem as string;
             OpenPrivateChat(peer);
         }
 
+        //opens private messages with the double-clicked player
         private void PlayersList_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             var peer = PlayersList.SelectedItem as string;
@@ -174,6 +178,7 @@ namespace DuplexClient
             }
         }
 
+        //fetches lobby files and adds them to the collection
         private void RefreshSharedFilesOnceAsync()
         {
             try
@@ -184,8 +189,9 @@ namespace DuplexClient
                     
                     foreach (var f in newFiles)
                         _files.Add(f);
-                    
 
+                    // keep track of the last file id. If files are found, set ID to count-1. Otherwise, set to the ID
+                    //which is 0
                     _client.LastFileId = _files.Count > 0 ? _files[_files.Count - 1].Id : _client.LastFileId;
                 }  
             }
@@ -273,14 +279,16 @@ namespace DuplexClient
         }
 
 
-        // Send
+        // Send message to lobby
         private void SendMessage_Click(object sender, RoutedEventArgs e)
         {
+            //trim the string firstKK
             var text = (MessageInput.Text ?? string.Empty).Trim();
             if (string.IsNullOrWhiteSpace(text)) return;
 
             try
             {
+                //check that the message was posted successfully
                 bool ok = _client.serverChannel.PostLobbyMessage(_lobbyName, _client.Username, text);
                 if (!ok)
                 {
@@ -299,11 +307,14 @@ namespace DuplexClient
 
         private void LoadMessages()
         {
+            //fetch the list of messages
             var page = _client.CurrentLobbyMessages;
             foreach (var m in page.Items)
             {
+                //add each message to the listbox
                 ChatList.Items.Add($"[{m.Timestamp:t}] {m.FromUser}: {m.Text}");
             }
+            //update status text
             Status.Text = $"Loaded {page.Items.Count} message(s).";
 
         }
@@ -347,6 +358,7 @@ namespace DuplexClient
 
         private void LobbyWindow_Closing(object sender, CancelEventArgs e)
         {
+            //clean up after leaving the lobby.
             _client.CurrentLobbyName = "";
             _client.LastMsgId = 0;
             _client.OnMessageSent = null;

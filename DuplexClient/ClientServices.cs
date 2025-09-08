@@ -21,13 +21,15 @@ namespace DuplexClient
         private DuplexChannelFactory<ServerInterfaceDuplex> chanFactory;
 
         private List<string> _lobbies = new List<string>();
-        //Fired when a new lobby is created
+        //These events are fired when the corresponding data is updated. This allows the UI to refresh.
         public Action OnLobbyCreated;
         public Action OnMessageSent;
         public Action OnPlayerJoined;
         public Action OnDMSent;
         public Action OnFileSent;
 
+        // State variables to keep track of current lobby, messages, players, files, etc. Used together
+        //with the events to update the UI.
         public string CurrentLobbyName = "";
         public int LastMsgId = 0;
         public MessagesPage CurrentLobbyMessages = null;
@@ -78,12 +80,12 @@ namespace DuplexClient
                 chanFactory.Close();
             }
         }
-
+        // removes the player from the players list
         public void Logout()
         {
             serverChannel.Logout(Username);
         }
-
+        //checks if the client is still connected to the server
         public bool IsConnected()
         {
             // Check if the channel is still open
@@ -100,7 +102,7 @@ namespace DuplexClient
             }
             return false; // If serverChannel is null, we are not connected
         }
-
+        //get the list of lobbies from the server
         public void FetchLobbies()
         {
             var lobbies = serverChannel.GetLobbyNames().ToList();
@@ -108,7 +110,7 @@ namespace DuplexClient
             // Notify that lobbies have been updated
             OnLobbyCreated?.Invoke();
         }
-
+        //fetch the messages from the current lobby
         public void FetchLobbyMessages()
         {
             
@@ -118,7 +120,7 @@ namespace DuplexClient
             OnMessageSent?.Invoke();
             
         }
-
+        // fetch the players from the current lobby
         public void FetchPlayersList()
         {
             var players = serverChannel.GetPlayers(CurrentLobbyName) ?? Array.Empty<string>();
@@ -126,6 +128,7 @@ namespace DuplexClient
             OnPlayerJoined?.Invoke();
             Trace.WriteLine("Lobby name: " + CurrentLobbyName);
         }
+        //fetch private messages between the user and the peer
         public void FetchPrivateMessages()
         {
             var messages = serverChannel.GetPrivateMessagesSince(Username, Peer, LastDMId, 100);
@@ -133,6 +136,7 @@ namespace DuplexClient
             CurrentDMs = messages;
             OnDMSent?.Invoke();
         }
+        //fetch files from the current lobby
         public void FetchLobbyFiles()
         {
             var files = serverChannel.GetLobbyFilesSince(CurrentLobbyName, LastFileId, 100);
@@ -141,10 +145,11 @@ namespace DuplexClient
             OnFileSent?.Invoke();
         }
 
-
+        //Downloads the file with the given fileId from the current lobby
         public byte[] DownloadLobbyFile(string lobby, int fileId)
             => serverChannel.DownloadLobbyFile(lobby, fileId);
 
+        //Uploads a file to the current lobby
         public bool UploadLobbyFile(string lobby, string fromUser, string fileName, byte[] content, string contentType)
             => serverChannel.UploadLobbyFile(lobby, fromUser, fileName, content, contentType);
 

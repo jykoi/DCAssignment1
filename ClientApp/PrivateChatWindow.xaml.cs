@@ -37,9 +37,11 @@ namespace ClientApp
         {
             try
             {
+                //get the list of messages for this chat window
                 var page = _channel.GetPrivateMessagesSince(_me, _peer, _lastId, 100);
                 if (page?.Items != null)
                 {
+                    //add the messages to the collection
                     foreach (var m in page.Items)
                         _items.Add(m);
 
@@ -48,7 +50,7 @@ namespace ClientApp
             }
             catch
             {
-                // keep UI resilient
+                
             }
         }
 

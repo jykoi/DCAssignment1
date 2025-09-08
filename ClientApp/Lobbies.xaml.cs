@@ -56,13 +56,15 @@ namespace ClientApp
 
         private void newLobbyBtn_Click(object sender, RoutedEventArgs e)
         {
+            // get the name of the lobby from the text field
             var newLobbyName = (newLobbyField.Text ?? string.Empty).Trim();
+            //if the  field is empty, show an error message
             if (string.IsNullOrWhiteSpace(newLobbyName))
             {
                 newLobbyField.Text = "enter a lobby name";
                 return;
             }
-
+            //create and confirm creation
             bool created = _client.serverChannel.CreateLobby(newLobbyName, _client.Username);
             if (created)
             {

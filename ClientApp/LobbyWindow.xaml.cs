@@ -40,6 +40,7 @@ namespace ClientApp
             Title = $"Lobby: {_lobbyName} — You: {_client.Username}";
 
             _cts = new CancellationTokenSource();
+            // subscribe to functions when the window is loaded
             Loaded += (_, __) => _ = StartPollingAsync(_cts.Token);
             Loaded += (_, __) => _ = StartPlayersPollingAsync(_cts.Token);  //loaded hook for players
             Loaded += (_, __) => RefreshSharedFilesOnce();   // initial fetch so the list isn’t empty
@@ -398,6 +399,7 @@ namespace ClientApp
 
             _cts.Cancel();
 
+            // show the Lobbies window again
             if (_parent != null && !_parent.IsVisible)
                 _parent.Show();
 

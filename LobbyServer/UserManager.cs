@@ -17,10 +17,12 @@ namespace LobbyServer
 
         public static bool AddUser(string username)
         {
+            // Check for null, empty, whitespace, or duplicate usernames
             if (string.IsNullOrWhiteSpace(username) || _usernames.Contains(username))
             {
                 return false; 
             }
+            //add the user
             _usernames.Add(username);
             return true; 
         }

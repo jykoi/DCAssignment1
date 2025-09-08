@@ -10,6 +10,7 @@ using InterfaceLibrary;
 
 namespace LobbyServer
 {
+    //data contract for passing between server and clients
     [DataContract]
     public class Lobby
     {
@@ -50,21 +51,8 @@ namespace LobbyServer
         private int _nextFileId = 1;
 
 
-        //this property makes the program crash even though it's now used anywhere
-
-        //[DataMember]
-        //public List<string> Players
-        //{
-        //    get
-        //    {
-        //        return new List<string>(_players);   
-        //    }
-        //}
-
         public Lobby(string name)
         {
-            //_players = new List<string>();
-            //_name = name;
             Name = name;
         }
 
@@ -82,11 +70,13 @@ namespace LobbyServer
 
         public bool AddPlayer(string username)
         {
+            // trim and validate username
             username = (username ?? string.Empty).Trim();
             if (string.IsNullOrWhiteSpace(username)) return false;
 
             lock (_playersLock)
             {
+                //add if the player is not already in the lobby
                 if (_players.Contains(username)) return false;
                 _players.Add(username);
                 return true;
@@ -95,11 +85,13 @@ namespace LobbyServer
 
         public bool RemovePlayer(string username)
         {
+            // trim and validate username
             username = (username ?? string.Empty).Trim();
             if (string.IsNullOrWhiteSpace(username) || !_players.Contains(username)) return false;
 
             lock (_playersLock)
             {
+                //try to remove the player and return the result of the operation
                 bool result = _players.Remove(username);
                 return result;
             }
@@ -114,6 +106,7 @@ namespace LobbyServer
 
         public int AddLobbyMessage(string fromUser, string text)
         {
+            //create the message with its contents
             var msg = new ChatMessage
             {
                 Id = _nextMessageId++,

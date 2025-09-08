@@ -49,7 +49,9 @@ namespace LobbyServer
 
             lock (UsersLock)
             {
+                //check that the user has been successfully added
                 bool success = UserManager.AddUser(username);
+                //logging...
                 foreach (var user in UserManager.Usernames)
                 {
                     Console.WriteLine(user);
@@ -62,13 +64,16 @@ namespace LobbyServer
 
         public bool CreateLobby(string lobbyName, string ownerName)
         {
+            //check that the name is valid
             if (string.IsNullOrWhiteSpace(lobbyName) || LobbyManager.LobbyExists(lobbyName)) {
                 return false;
             }
 
+            //create & add the owner to the lobby
             var lobby = new Lobby(lobbyName);
             LobbyManager.AddLobby(lobby);
             JoinLobby(lobbyName, ownerName);
+            //notify all duplex clients to refresh their lobby list
             foreach (var client in _clients)
             {
                 client.Value.FetchLobbies();
@@ -79,11 +84,13 @@ namespace LobbyServer
 
         public void Logout(string username)
         {
+            //normalise the username
             username = (username ?? string.Empty).Trim();
             if (string.IsNullOrWhiteSpace(username)) return;
 
             lock (UsersLock)
             {
+                //remove the user and check that it was successful
                 if (UserManager.Usernames.Remove(username))
                 {
                     Console.WriteLine($"User '{username}' logged out.");
@@ -98,11 +105,6 @@ namespace LobbyServer
 
         }
 
-        public List<Lobby> ListLobbies()
-        {
-            return LobbyManager.Lobbies;
-        }
-
         public string[] GetLobbyNames()
         {
             return LobbyManager.GetLobbyNames();
@@ -110,14 +112,18 @@ namespace LobbyServer
 
         public void JoinLobby(string lobbyName, string username)
         {
+            //fetch all the lobbies
             List<Lobby> lobbies = LobbyManager.Lobbies;
             bool lobbyFound = false;
+            //find the lobby that matches the given lobbyName
             for (int i = 0; i < lobbies.Count && !lobbyFound; i++)
             {
                 if (lobbies[i].Name.Equals(lobbyName, StringComparison.Ordinal))
                 {
+                    //add self to lobby
                     if (lobbies[i].AddPlayer(username))
                     {
+                        //logging...
                         Console.WriteLine($"User '{username}' joined lobby '{lobbyName}'.");
                         foreach (var player in lobbies[i].GetPlayersSnapshot())
                         {
@@ -127,6 +133,7 @@ namespace LobbyServer
                     lobbyFound = true;
                 }
             }
+            //notify all duplex clients to refresh their players list
             foreach (var client in _clients)
             {
                 client.Value.FetchPlayersList();
@@ -142,8 +149,11 @@ namespace LobbyServer
 
         public void LeaveLobby(string lobbyName, string username)
         {
+            //get the lobby by name
             Lobby lobby = GetLobbyByName(lobbyName);
+            // return if lobby is null or username is invalid
             if (lobby == null || string.IsNullOrWhiteSpace(username)) return;
+            //try to remove the player from the lobby
             if (lobby.RemovePlayer(username))
             {
                 Console.WriteLine($"User '{username}' left lobby '{lobby.Name}'.");
@@ -163,12 +173,15 @@ namespace LobbyServer
         {
             try
             {
+                //get the session ID of the client
                 string clientId = OperationContext.Current.SessionId;
+                //get the callback channel
                 IServerCallback callback = OperationContext.Current.GetCallbackChannel<IServerCallback>();
                 lock (_duplexLock)
                 {
                     if (!_clients.ContainsKey(clientId))
                     {
+                        //add the callback channel to the dictionary
                         _clients.Add(clientId, callback);
                         isDuplexClient = true;
                     }
@@ -186,9 +199,11 @@ namespace LobbyServer
         {
             if (isDuplexClient)
             {
+                // get the session ID of the client
                 string clientId = OperationContext.Current.SessionId;
                 lock (_duplexLock)
                 {
+                    //if the session id is found, remove it from the dictionary
                     if (_clients.ContainsKey(clientId))
                     {
                         _clients.Remove(clientId);
@@ -279,13 +294,15 @@ namespace LobbyServer
             return new MessagesPage { Items = items, LastId = last, HasMore = maxId > last };
         }
 
+        //get players from a particular lobby
         public string[] GetPlayers(string lobbyName)
         {
+            //find the lobby by name
             var lobby = LobbyManager.Lobbies.FirstOrDefault(l => l.Name.Equals(lobbyName, StringComparison.OrdinalIgnoreCase));
             if (lobby == null)
                 return Array.Empty<string>();
 
-            
+            //return a snapshot of the players in that lobby
             return lobby.GetPlayersSnapshot().ToArray();
         }
 
